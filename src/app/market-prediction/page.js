@@ -3,18 +3,13 @@
 import { Datatable } from "@/components/datatable"
 import { MButton, MInput, MSelect, ModalTitle, MuiInput, YMDatePicker } from "@/components/form";
 import { convDate, formatCurrency, showPopup, thousandSeparator } from "@/helpers";
-import { submitSinglePredict, deleteOfferingData, generateOffering, getOfferingList, updateOfferingData, submitBulkPredict } from "@/service/marketPrediction";
+import { submitSinglePredict, deleteOfferingData, generateOffering, getVehicleList, updateOfferingData, submitBulkPredict } from "@/service/marketPrediction";
 import { closeButton, primaryButton, secondaryButton, successButton } from "@/styles/theme/theme.js";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { Add, Clear, Delete, Edit, FileDownload, Search, Send } from "@mui/icons-material";
 import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, Grid, IconButton, Paper, Tab, Tabs, ThemeProvider, Tooltip, Typography, createTheme } from "@mui/material";
-import { debounce, filter } from "lodash";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import dayjs from "dayjs";
 import { enqueueSnackbar } from "notistack";
-import Link from "next/link";
-
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -31,34 +26,15 @@ export default function MarketPrediction() {
     return addCommas(removeNonNumeric(number))
   }
 
-  const [token, setToken] = useState()
-  const [user_id, setUserId] = useState()
   const [tabsValue, setTabsValue] = useState(0);
 
-  const [modalCreate, setModalCreate] = useState(false)
   const [modalDetail, setModalDetail] = useState(false)
   const [isUpdate, setIsUpdate] = useState(false)
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false)
   const [isLoadingSubmitBulk, setIsLoadingSubmitBulk] = useState(false)
   const [predictionData, setPredictionData] = useState()
-  const [detailData, setDetailData] = useState({
-    id: null,
-    document_name: null,
-    quotation_number: null,
-    customer_name: null,
-    customer_address: null,
-    customer_phone: null,
-    customer_company: null,
-    project_name: null,
-    products: [{
-      product_name: null,
-      quantity: null,
-      price: null,
-    }],
-    ppn: null,
-    note: null,
-    document_date: null,
-  })
+  const [predictionDataBulk, setPredictionDataBulk] = useState()
+
 
   const [bulkData, setBulkData] = useState([])
 
@@ -87,7 +63,7 @@ export default function MarketPrediction() {
   const initialErrorMessage = errorMessage
   const initialValue = formData
 
-  const [offeringQuery, setOfferingQuery] = useState({
+  const [vehicleQuery, setVehicleQuery] = useState({
     page: 1,
     limit: 10,
     order: 'desc',
@@ -96,22 +72,21 @@ export default function MarketPrediction() {
   const [query, setQuery] = useState('')
 
   const {
-    data: offeringData,
-    isLoading: isLoadingOfferingData,
-    refetch: mutateOfferingData,
+    data: vehicleData,
+    isLoading: isLoadingVehicleData,
+    refetch: mutateVehicleData,
   } = useQuery({
     queryKey: [
-      "offering-data",
+      "vehicle-data",
       {
-        ...offeringQuery.page && { page: offeringQuery.page },
-        ...offeringQuery.limit && { limit: offeringQuery.limit },
-        ...offeringQuery.order && { order: offeringQuery.order },
-        ...offeringQuery.sortBy && { sortBy: offeringQuery.sortBy },
+        ...vehicleQuery.page && { page: vehicleQuery.page },
+        ...vehicleQuery.limit && { limit: vehicleQuery.limit },
+        ...vehicleQuery.order && { order: vehicleQuery.order },
+        ...vehicleQuery.sortBy && { sortBy: vehicleQuery.sortBy },
         ...query && { query: query },
-        // rating: rating,
       },
     ],
-    queryFn: ({ queryKey }) => getOfferingList(queryKey[1]),
+    queryFn: ({ queryKey }) => getVehicleList(queryKey[1]),
   });
 
   const toggleModalDeleteOffering = (id) => {
@@ -121,22 +96,11 @@ export default function MarketPrediction() {
       'Yes',
       () => {
         deleteOfferingData(id),
-          mutateOfferingData();
+          mutateVehicleData();
       }
     );
   }
 
-  const toggleDownloadOffering = (id) => {
-    showPopup(
-      'confirm',
-      'Are you sure want to generate a PDF for this offering?',
-      'Yes',
-      () => {
-        window.open(`${process.env.NEXT_PUBLIC_API_URL}/${process.env.NEXT_PUBLIC_API_PREFIX}/${process.env.NEXT_PUBLIC_API_VERSION}/generate-pdf/${id}?token=${user_id}`, "_blank")
-        setModalDetail(false);
-      }
-    );
-  }
 
 
   const toggleModalDetail = (type, params) => {
@@ -213,6 +177,7 @@ export default function MarketPrediction() {
     setTabsValue(newValue);
     setBulkData([])
     setPredictionData(null)
+    setPredictionDataBulk(null)
     setFormData({
       id: null,
       jenis_kendaraan: null,
@@ -299,12 +264,33 @@ export default function MarketPrediction() {
     const renderBulkActions = (params) => {
       return (
         <div>
-          <div onClick={(e) => {handleCheckboxChange(e, params)}}>
+          <div onClick={(e) => { handleCheckboxChange(e, params) }}>
             <Checkbox
               // checked={checked}
               inputProps={{ 'aria-label': 'controlled' }}
             />
           </div>
+        </div>
+      )
+    }
+
+    const renderBulkButton = (params) => {
+      return (
+        <div>
+          <>
+            <div style={{ display: "inline", marginRight: "5px" }}>
+              <Tooltip title="Detail">
+                <Button
+                  variant="contained"
+                  // color="primary"
+                  size="small"
+                  className="bg-[#2DC2BD] shadow-none text-white min-w-[10px] pr-0"
+                  onClick={() => console.log(params)}
+                  startIcon={<Search />}
+                ></Button>
+              </Tooltip>
+            </div>
+          </>
         </div>
       )
     }
@@ -332,7 +318,7 @@ export default function MarketPrediction() {
             {tabsValue === 0 ? (<form onSubmit={(e) => handleSubmit(e)}>
               <DialogContent style={{ paddingTop: '0 !important' }}>
                 <div>
-                  <Grid container xs={12} columnSpacing={4}>
+                  <Grid container columnSpacing={4}>
                     <Grid item xs={6} className="mb-[24px]">
                       <div>
                         <Typography className="mb-2">Jenis Kendaaran</Typography>
@@ -450,7 +436,7 @@ export default function MarketPrediction() {
                 <ThemeProvider theme={primaryButton}>
                   <MButton
                     type="submit"
-                    style={{ marginRight: 32 }}
+                    style={{ marginRight: 4 }}
                     label={"Submit"}
                     loading={isLoadingSubmit}
                     icon={<Send />}
@@ -464,7 +450,7 @@ export default function MarketPrediction() {
               {predictionData ? (
                 <div className="px-6">
                   <Typography className="mb-4"><b>Hasil Prediksi:</b></Typography>
-                  <Grid container xs={12}>
+                  <Grid container>
                     <Grid item xs={3}>
                       <Typography className="mb-2 font-[500]">Nama Kendaraan</Typography>
                     </Grid>
@@ -475,7 +461,7 @@ export default function MarketPrediction() {
                       <Typography className="mb-2 "> {predictionData.nama_kendaraan}</Typography>
                     </Grid>
                   </Grid>
-                  <Grid container xs={12}>
+                  <Grid container>
                     <Grid item xs={3}>
                       <Typography className="mb-2 font-[500]">Harga Tertinggi</Typography>
                     </Grid>
@@ -486,7 +472,7 @@ export default function MarketPrediction() {
                       <Typography className="mb-2 "> Rp. {predictionData.market_prediction.harga_tertinggi ? thousandSeparator(predictionData.market_prediction.harga_tertinggi) : null}</Typography>
                     </Grid>
                   </Grid>
-                  <Grid container xs={12}>
+                  <Grid container>
                     <Grid item xs={3}>
                       <Typography className="mb-2 font-[500]">Harga Terendah</Typography>
                     </Grid>
@@ -497,7 +483,7 @@ export default function MarketPrediction() {
                       <Typography className="mb-2 "> Rp. {predictionData.market_prediction.harga_terendah ? thousandSeparator(predictionData.market_prediction.harga_terendah) : null}</Typography>
                     </Grid>
                   </Grid>
-                  <Grid container xs={12} className="mt-2">
+                  <Grid container className="mt-2">
                     <Grid item xs={3}>
                       <Typography className="mb-2 font-[500]">Link Referensi:</Typography>
                     </Grid>
@@ -517,10 +503,10 @@ export default function MarketPrediction() {
                 <Datatable
                   creatable={false}
                   title={"Table List"}
-                  loading={isLoadingOfferingData}
-                  // data={offeringData?.data ? offeringData?.data : []}
-                  // total={offeringData?.meta ? offeringData?.meta?.total_page : 0}
-                  // page={offeringData?.meta ? offeringData?.meta?.current_page : 1}
+                  loading={isLoadingVehicleData}
+                  // data={vehicleData?.data ? vehicleData?.data : []}
+                  // total={vehicleData?.meta ? vehicleData?.meta?.total_page : 0}
+                  // page={vehicleData?.meta ? vehicleData?.meta?.current_page : 1}
                   data={dummyData}
                   total={dummyData ? dummyData.length : null}
                   page={1}
@@ -538,7 +524,7 @@ export default function MarketPrediction() {
                   manualNumbering={false}
                 />
                 {bulkData.length >= 0 ? (
-                  <Grid container xs={12} className="flex justify-end">
+                  <Grid container className="flex justify-end">
                     <Grid item xs={12} className="flex justify-end">
                       <ThemeProvider theme={primaryButton}>
                         <MButton
@@ -556,6 +542,32 @@ export default function MarketPrediction() {
                     </Grid>
                   </Grid>
                 ) : (<></>)}
+
+                {predictionDataBulk ? (<>
+                  <Datatable
+                    creatable={false}
+                    title={"Prediction Result"}
+                    loading={isLoadingVehicleData}
+                    // data={vehicleData?.data ? vehicleData?.data : []}
+                    // total={vehicleData?.meta ? vehicleData?.meta?.total_page : 0}
+                    // page={vehicleData?.meta ? vehicleData?.meta?.current_page : 1}
+                    data={predictionDataBulk}
+                    total={predictionDataBulk ? predictionDataBulk.length : null}
+                    page={1}
+                    columns={columnsResults}
+
+                    handleReload={(params) => handleReload(params)}
+                    // handleDetail={(params) => this.toggleModal('detail', params)}
+                    handleCreate={() => {
+                      setFormData(initialValue)
+                      toggleModalForm('open')
+                    }}
+                    customActions={(params) => renderBulkButton(params)}
+                    // toggleResetAll={queryParams.resetDatatable}ha
+                    // toggleResetPage={queryParams.resetPage}
+                    manualNumbering={false}
+                  />
+                </>) : (<></>)}
               </div>
             )}
 
@@ -583,30 +595,6 @@ export default function MarketPrediction() {
               ></Button>
             </Tooltip>
           </div>
-          <div style={{ display: "inline", marginRight: "5px" }}>
-            <Tooltip title="Edit">
-              <Button
-                variant="contained"
-                // color="  "
-                size="small"
-                className="bg-[#2DC2BD] shadow-none text-white min-w-[10px] pr-0"
-                onClick={() => toggleModalForm('open', params)}
-                startIcon={<Edit />}
-              ></Button>
-            </Tooltip>
-          </div>
-          <div style={{ display: "inline", marginRight: "5px" }}>
-            <Tooltip title="Delete">
-              <Button
-                variant="contained"
-                // color="primary"
-                size="small"
-                className="bg-[#2DC2BD] shadow-none text-white min-w-[10px] pr-0"
-                onClick={() => toggleModalDeleteOffering(params[1])}
-                startIcon={<Delete />}
-              ></Button>
-            </Tooltip>
-          </div>
           {/* <div style={{ display: "inline", marginRight: "5px" }}>
             <Tooltip title="Generate PDF">
               <Button
@@ -624,7 +612,7 @@ export default function MarketPrediction() {
     );
   };
 
-  const columns = [
+  const columnsResults = [
     {
       name: "id",
       label: "id",
@@ -640,11 +628,134 @@ export default function MarketPrediction() {
     {
       name: "wilayah_kendaraan",
       label: "Lokasi",
-      display: true,
+      display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
       name: "nama_kendaraan",
+      label: "Description",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "tahun_kendaraan",
+      label: "Year",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "warna_kendaraan",
+      label: "Color",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "nomor_kendaraan",
+      label: "Nopol",
+      display: false,
+      customBodyRender: (value) => (value ? convDate(value, 'DD/MM/YYYY') : "-"),
+    },
+    {
+      name: "pajak_kendaraan",
+      label: "Pajak",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "stnk",
+      label: "STNK",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "grade_all",
+      label: "Grade All",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "grade_interior",
+      label: "Grade Interior",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "grade_body",
+      label: "Grade Body",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "grade_mesin",
+      label: "Grade Mesin",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "jarak_tempuh_kendaraan",
+      label: "KM",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "harga_terendah",
+      label: "Bottom Price",
+      display: true,
+      customBodyRender: (value) => (value ? thousandSeparator(value) : "-"),
+    },
+    {
+      name: "status",
+      label: "Status",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "harga_terbentuk",
+      label: "Harga Terbentuk",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "transmisi_kendaraan",
+      label: "Transmisi Kendaraan",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "bahan_bakar",
+      label: "Bahan Bakar",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "harga_tertinggi",
+      label: "Bottom Price",
+      display: true,
+      customBodyRender: (value) => (value ? thousandSeparator(value) : "-"),
+    },
+
+  ];
+  const columns = [
+    {
+      name: "id",
+      label: "id",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "tanggal_jual",
+      label: "Tanggal Jual",
+      display: false,
+      customBodyRender: (value) => (value ? convDate(value, 'DD/MM/YYYY') : "-"),
+    },
+    {
+      name: "lokasi",
+      label: "Lokasi",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "desciption",
       label: "Description",
       display: true,
       customBodyRender: (value) => (value ? value : "-"),
@@ -829,8 +940,8 @@ export default function MarketPrediction() {
   ]
 
   const handleReload = (params) => {
-    setOfferingQuery({
-      ...offeringQuery,
+    setVehicleQuery({
+      ...vehicleQuery,
       page: params.page,
       limit: params.limit,
       sortBy: params.sortBy,
@@ -924,9 +1035,24 @@ export default function MarketPrediction() {
     e.preventDefault();
 
     if (bulkData.length < 1) {
-      return enqueueSnackbar("Please select atleast 1 data", {variant: "warning"})
+      return enqueueSnackbar("Please select atleast 1 data", { variant: "warning" })
     }
     const response = await submitBulkPredict(bulkData)
+    if (response.data?.error) {
+      setIsLoadingSubmitBulk(false)
+    } else {
+      if (response.status_code === 200) {
+        setPredictionDataBulk(response.data)
+        setIsLoadingSubmitBulk(false)
+        enqueueSnackbar("Success", { variant: "success" })
+        // console.log(response);
+        // mutateVehicleData()
+      } else {
+        setIsLoadingSubmitBulk(false)
+        enqueueSnackbar("Something went wrong", { variant: "error" })
+        // mutateVehicleData()
+      }
+    }
     setIsLoadingSubmitBulk(false)
   }
 
@@ -967,11 +1093,11 @@ export default function MarketPrediction() {
         setIsLoadingSubmit(false)
         enqueueSnackbar("Success", { variant: "success" })
         // console.log(response);
-        // mutateOfferingData()
+        // mutateVehicleData()
       } else {
         setIsLoadingSubmit(false)
         enqueueSnackbar("Something went wrong", { variant: "error" })
-        // mutateOfferingData()
+        // mutateVehicleData()
       }
     }
     setIsLoadingSubmit(false)
@@ -985,13 +1111,13 @@ export default function MarketPrediction() {
         {tabsValue === 0 ? <Datatable
           creatable={false}
           title={"Table List"}
-          // loading={isLoadingOfferingData}
-          // data={offeringData?.data ? offeringData?.data : []}
-          // total={offeringData?.meta ? offeringData?.meta?.total_page : 0}
-          // page={offeringData?.meta ? offeringData?.meta?.current_page : 1}
-          data={dummyData}
-          total={dummyData ? dummyData.length : null}
-          page={1}
+          loading={isLoadingVehicleData}
+          data={vehicleData?.data ? vehicleData?.data : []}
+          total={vehicleData?.meta ? vehicleData?.meta?.total : 0}
+          page={vehicleData?.meta ? vehicleData?.meta?.page : 1}
+          // data={dummyData}
+          // total={dummyData ? dummyData.length : null}
+          // page={1}
           columns={columns}
 
           handleReload={(params) => handleReload(params)}

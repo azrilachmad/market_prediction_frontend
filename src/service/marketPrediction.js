@@ -2,7 +2,7 @@ import { convDate } from "@/helpers";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 
-export const getOfferingList = async (params) => {
+export const getVehicleList = async (params) => {
   const { page, limit, query, sortBy, order, } = params;
   const token = localStorage.getItem('cred_m')
 
@@ -11,7 +11,6 @@ export const getOfferingList = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      'Authorization': `Bearer ${token}`
     },
     params: {
       ...page && { page: page },
@@ -24,7 +23,7 @@ export const getOfferingList = async (params) => {
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/${process.env.NEXT_PUBLIC_API_PREFIX}/${process.env.NEXT_PUBLIC_API_VERSION}/offers`, config,
+      `${process.env.NEXT_PUBLIC_API_URL}/vehicles`, config
     );
     if (response) {
       return response.data
