@@ -237,3 +237,30 @@ export const primaryButton = createTheme({
     },
   },
 });
+
+export const closeBtn = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#829191",
+    },
+  },
+  components: {
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          color: "white !important",
+          backgroundColor: "#829191 !important",
+          boxShadow: "none !important",
+          "&:hover": {
+            backgroundColor: "#687676 !important",
+            boxShadow: "none !important",
+          },
+          height: "40px !important",
+          fontWeight: "500 !important",
+          fontSize: 16,
+        },
+      },
+    },
+  },
+});

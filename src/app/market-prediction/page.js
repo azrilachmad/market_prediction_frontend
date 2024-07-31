@@ -3,10 +3,10 @@
 import { Datatable } from "@/components/datatable"
 import { MButton, MInput, MSelect, ModalTitle, MuiInput, YMDatePicker } from "@/components/form";
 import { convDate, formatCurrency, showPopup, thousandSeparator } from "@/helpers";
-import { submitSinglePredict, deleteOfferingData, generateOffering, getVehicleList, updateOfferingData, submitBulkPredict } from "@/service/marketPrediction";
-import { closeButton, primaryButton, secondaryButton, successButton } from "@/styles/theme/theme.js";
+import { submitSinglePredict, deleteOfferingData, generateOffering, getVehicleList, updateOfferingData, submitBulkPredict, updateVehicles } from "@/service/marketPrediction";
+import { closeBtn, closeButton, primaryButton, secondaryButton, successButton } from "@/styles/theme/theme.js";
 import { Add, Clear, Delete, Edit, FileDownload, Search, Send } from "@mui/icons-material";
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, Grid, IconButton, Paper, Tab, Tabs, ThemeProvider, Tooltip, Typography, createTheme } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, Grid, IconButton, Paper, Tab, Tabs, ThemeProvider, Tooltip, Typography, createTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { enqueueSnackbar } from "notistack";
@@ -15,6 +15,8 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
+import moment from "moment";
+import { isNumber, toNumber, update } from "lodash";
 
 
 export default function MarketPrediction() {
@@ -37,7 +39,32 @@ export default function MarketPrediction() {
 
 
   const [bulkData, setBulkData] = useState([])
+  const [detailVehicleData, setDetailVehicleData] = useState({
+    id: null,
+    tanggal_jual: null,
+    lokasi: null,
+    desciption: null,
+    jenismobil: null,
+    transmisi: null,
+    umurmobil: null,
+    color: null,
+    nopol: null,
+    pajak: null,
+    stnk: null,
+    grade_all: null,
+    gradeinterior: null,
+    gradebody: null,
+    grademesin: null,
+    km: null,
+    bottom_price: null,
+    status: null,
+    harga_terbentuk: null,
+    nama_mobil: null,
+    harga_atas: null,
+    harga_bawah: null,
+  })
 
+  const [isPredictedData, setIsPredictedData] = useState(false)
   const [formData, setFormData] = useState({
     id: null,
     jenis_kendaraan: null,
@@ -60,7 +87,6 @@ export default function MarketPrediction() {
     wilayah_kendaraan: null,
   })
 
-  const initialErrorMessage = errorMessage
   const initialValue = formData
 
   const [vehicleQuery, setVehicleQuery] = useState({
@@ -104,44 +130,381 @@ export default function MarketPrediction() {
 
 
   const toggleModalDetail = (type, params) => {
+    // return console.log(params)
     if (type === 'open') {
-      setDetailData({
+      console.log(params)
+      setIsPredictedData(false)
+      setDetailVehicleData({
         id: params[1],
-        document_name: params[2],
-        quotation_number: params[3],
-        customer_name: params[7],
-        customer_address: params[8],
-        customer_phone: params[9],
-        customer_company: params[4],
-        project_name: params[11],
-        products: params[12],
-        ppn: params[13],
-        note: params[14],
-        document_date: params[6],
+        tanggal_jual: params[2],
+        lokasi: params[3],
+        desciption: params[4],
+        jenismobil: params[5],
+        transmisi: params[6],
+        year: params[7],
+        umurmobil: params[23],
+        color: params[8],
+        nopol: params[9],
+        pajak: params[10],
+        stnk: params[11],
+        grade_all: params[12],
+        gradeinterior: params[13],
+        gradebody: params[14],
+        grademesin: params[15],
+        km: params[16],
+        bottom_price: params[17],
+        status: params[18],
+        harga_terbentuk: params[19],
+        nama_mobil: params[20],
+        harga_atas: params[21],
+        harga_bawah: params[22],
       })
       setModalDetail(true)
     } else if (type === 'close') {
-      setDetailData({
+      setDetailVehicleData({
         id: null,
-        document_name: null,
-        quotation_number: null,
-        customer_name: null,
-        customer_address: null,
-        customer_phone: null,
-        customer_company: null,
-        project_name: null,
-        products: [{
-          product_name: null,
-          quantity: null,
-          price: null,
-        }],
-        ppn: null,
-        note: null,
-        document_date: null,
+        tanggal_jual: null,
+        lokasi: null,
+        desciption: null,
+        jenismobil: null,
+        transmisi: null,
+        umurmobil: null,
+        color: null,
+        nopol: null,
+        pajak: null,
+        stnk: null,
+        grade_all: null,
+        gradeinterior: null,
+        gradebody: null,
+        grademesin: null,
+        km: null,
+        bottom_price: null,
+        status: null,
+        harga_terbentuk: null,
+        nama_mobil: null,
+        harga_atas: null,
+        harga_bawah: null,
       })
       setModalDetail(false)
     }
   }
+
+  const renderModalDetail = () => {
+
+
+
+    return (
+      <Dialog
+        scroll="paper"
+        fullWidth
+        className="xl"
+        open={modalDetail}
+        onClose={() => toggleModalForm('close')}
+      >
+        <ModalTitle
+          title={"Detail Kendaraan"}
+          onClose={() => toggleModalDetail('close')}
+        />
+        <DialogContent style={{ paddingTop: '0 !important' }}>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Tanggal Jual</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.tanggal_jual ? convDate(detailVehicleData.tanggal_jual, 'DD-MM-YYYY') : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Lokasi</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.lokasi ? detailVehicleData.lokasi : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Description</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.desciption ? detailVehicleData.desciption : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Jenis Mobil</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.jenismobil ? detailVehicleData.jenismobil : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Transmisi</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.transmisi ? detailVehicleData.transmisi : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Year</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.year ? detailVehicleData.year : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Umur Mobil</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.umurmobil ? `${detailVehicleData.umurmobil} Tahun` : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Color</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.color ? detailVehicleData.color : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Nopol</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.nopol ? detailVehicleData.nopol : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Pajak</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.pajak ? convDate(detailVehicleData.pajak, 'DD-MM-YYYY') : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>STNK</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.stnk ? convDate(detailVehicleData.stnk, 'DD-MM-YYYY') : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Grade All</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.grade_all ? detailVehicleData.grade_all : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Grade Interior</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.gradeinterior ? detailVehicleData.gradeinterior : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Grade Body</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.gradebody ? detailVehicleData.gradebody : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Grade Mesin</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.grademesin ? detailVehicleData.grademesin : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Jarak Tempuh</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.km ? `${thousandSeparator(detailVehicleData.km)} KM` : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Bottom Price</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{isNumber(detailVehicleData.bottom_price) ? `Rp. ${thousandSeparator(detailVehicleData.bottom_price)}` : 'Tidak Diketahui'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Harga Terbentuk</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{isNumber(detailVehicleData.harga_terbentuk) ? `Rp. ${thousandSeparator(detailVehicleData.harga_terbentuk)}` : 'Tidak Diketahui'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Harga Terendah</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.harga_bawah ? `Rp. ${thousandSeparator(detailVehicleData.harga_bawah)}` : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4.5} className="mb-2">
+                <Typography className="text-sm"><b>Harga Tertinggi</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.harga_atas ? `Rp. ${thousandSeparator(detailVehicleData.harga_atas)}` : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+
+        </DialogContent>
+        <DialogActions style={{
+          padding: '0px 20px 20px 20px',
+        }}>
+          {tabsValue === 0 ? (
+            <ThemeProvider theme={primaryButton}>
+              <MButton
+                label={'PREDICT'}
+                icon={<Send />}
+                onClick={(e) => {
+                  showPopup(
+                    'confirm',
+                    'Are you sure want to market predict this data?',
+                    'Yes',
+                    () => {
+                      setFormData({
+
+                        id: detailVehicleData.id,
+                        jenis_kendaraan: 'Mobil',
+                        nama_kendaraan: `${detailVehicleData.desciption}`,
+                        tahun_kendaraan: `${detailVehicleData.year}`,
+                        jarak_tempuh_kendaraan: `${detailVehicleData.km}`,
+                        transmisi_kendaraan: detailVehicleData.transmisi === 'AT' ? 'Automatic' : detailVehicleData.transmisi === 'MT' ? 'Manual' : '',
+                        bahan_bakar: 'Bensin',
+                        wilayah_kendaraan: `${detailVehicleData.lokasi}`
+                      })
+                      toggleModalDetail('close')
+                      setIsPredictedData(true)
+                      setPredictionData(null)
+                    }
+                  )
+                }}
+              />
+            </ThemeProvider>
+          ) : (<ThemeProvider theme={secondaryButton}>
+            <MButton
+              label={'UPDATE DATA'}
+              icon={<Send />}
+              onClick={(e) => {
+                updateVehicleDatas(e, detailVehicleData)
+              }
+              }
+            />
+          </ThemeProvider>)}
+          <ThemeProvider theme={closeBtn}>
+            <MButton
+              label="CLOSE"
+              onClick={() => {
+                toggleModalDetail('close')
+              }}
+            />
+          </ThemeProvider>
+
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
 
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -188,6 +551,7 @@ export default function MarketPrediction() {
       bahan_bakar: null,
       wilayah_kendaraan: null,
     })
+    setIsPredictedData(false)
   };
   const renderPredictionAccordion = () => {
 
@@ -231,23 +595,27 @@ export default function MarketPrediction() {
         const datas = {
           id: params[1],
           tanggal_jual: params[2],
-          wilayah_kendaraan: params[3],
-          nama_kendaraan: params[4],
-          tahun_kendaraan: params[5],
-          warna_kendaraan: params[6],
-          nomor_kendaraan: params[7],
-          pajak_kendaraan: params[8],
-          stnk: params[9],
-          grade_all: params[10],
-          grade_interior: params[11],
-          grade_body: params[12],
-          grade_mesin: params[13],
-          jarak_tempuh_kendaraan: params[14],
-          harga_terendah: params[15],
-          status: params[16],
-          harga_terbentuk: params[17],
-          transmisi_kendaraan: params[18],
-          bahan_bakar: params[19],
+          lokasi: params[3],
+          desciption: params[4],
+          jenismobil: params[5],
+          transmisi: params[6],
+          year: params[7],
+          umurmobil: params[23],
+          color: params[8],
+          nopol: params[9],
+          pajak: params[10],
+          stnk: params[11],
+          grade_all: params[12],
+          gradeinterior: params[13],
+          gradebody: params[14],
+          grademesin: params[15],
+          km: params[16],
+          bottom_price: params[17],
+          status: params[18],
+          harga_terbentuk: params[19],
+          nama_mobil: params[20],
+          harga_atas: params[21],
+          harga_bawah: params[22],
         }
         let newData = bulkData
         newData.push(datas)
@@ -295,6 +663,7 @@ export default function MarketPrediction() {
       )
     }
 
+
     return <div>
 
       <Accordion defaultExpanded variant="outlined" className="mb-[32px] rounded-[18px]">
@@ -326,7 +695,6 @@ export default function MarketPrediction() {
                           fullWidth
                           name="jenis_kendaraan"
                           value={jenis_kendaraan}
-                          label="Jenis Kendaraan"
                           onChange={(event) => handleInputChange(event)}
                           error={errorMessage ? errorMessage.jenis_kendaraan : null}
                           keyPair={['id', 'name']}
@@ -342,8 +710,7 @@ export default function MarketPrediction() {
                           fullwidth
                           variant="outlined"
                           name="nama_kendaraan"
-                          label="Nama Kendaraan"
-                          placeholder="Enter quotation number"
+                          placeholder="Input Nama Kendaraan"
                           value={nama_kendaraan}
                           onChange={(event) => handleInputChange(event)}
                           errorMessage={errorMessage && errorMessage?.quotation_number ? errorMessage?.quotation_number[0] : false}
@@ -357,7 +724,6 @@ export default function MarketPrediction() {
                           fullwidth
                           variant="outlined"
                           name="tahun_kendaraan"
-                          label="Tahun Kendaraan"
                           placeholder="Input Tahun Kendaraan"
                           value={tahun_kendaraan}
                           onChange={(event) => handleInputChange(event)}
@@ -372,7 +738,6 @@ export default function MarketPrediction() {
                           fullwidth
                           variant="outlined"
                           name="jarak_tempuh_kendaraan"
-                          label="Jarak Tempuh Kendaran"
                           placeholder="Input Jarak Tempuh Kendaraan"
                           value={jarak_tempuh_kendaraan}
                           onChange={(event) => handleInputChange(event)}
@@ -388,7 +753,6 @@ export default function MarketPrediction() {
                           fullWidth
                           name="transmisi_kendaraan"
                           value={transmisi_kendaraan}
-                          label="Transmisi Kendaraan"
                           onChange={(event) => handleInputChange(event)}
                           error={false}
                           keyPair={['id', 'name']}
@@ -403,7 +767,6 @@ export default function MarketPrediction() {
                           fullWidth
                           name="bahan_bakar"
                           value={bahan_bakar}
-                          label="Bahan Bakar"
                           onChange={(event) => handleInputChange(event)}
                           error={false}
                           keyPair={['id', 'name']}
@@ -419,7 +782,6 @@ export default function MarketPrediction() {
                           style={{ marginBottom: 24 }}
                           variant="outlined"
                           name="wilayah_kendaraan"
-                          label="Wilayah Kendaraan"
                           placeholder="Input Wilayah Kendaraan"
                           value={wilayah_kendaraan}
                           onChange={(event) => handleInputChange(event)}
@@ -437,7 +799,7 @@ export default function MarketPrediction() {
                   <MButton
                     type="submit"
                     style={{ marginRight: 4 }}
-                    label={"Submit"}
+                    label={"Predict"}
                     loading={isLoadingSubmit}
                     icon={<Send />}
                     onClick={(e) => {
@@ -496,6 +858,19 @@ export default function MarketPrediction() {
                     }) : <></>}
                   </div>
 
+                  {isPredictedData ? (<ThemeProvider theme={secondaryButton}>
+                    <MButton
+                      className="flex justify-end mb-4 mt-4"
+                      label={"Submit Data"}
+                      // loading={isLoadingSubmitBulk}
+                      icon={<Send />}
+                      onClick={(e) => {
+                        updateVehicleData(e, predictionData)
+                      }}
+                    />
+                  </ThemeProvider>) : (<></>)}
+
+
                 </div>
               ) : (<></>)}
             </form >) : (
@@ -504,12 +879,12 @@ export default function MarketPrediction() {
                   creatable={false}
                   title={"Table List"}
                   loading={isLoadingVehicleData}
-                  // data={vehicleData?.data ? vehicleData?.data : []}
-                  // total={vehicleData?.meta ? vehicleData?.meta?.total_page : 0}
-                  // page={vehicleData?.meta ? vehicleData?.meta?.current_page : 1}
-                  data={dummyData}
-                  total={dummyData ? dummyData.length : null}
-                  page={1}
+                  data={vehicleData?.data ? vehicleData?.data : []}
+                  total={vehicleData?.meta ? vehicleData?.meta?.total : 0}
+                  page={vehicleData?.meta ? vehicleData?.meta?.page : 1}
+                  // data={dummyData}
+                  // total={dummyData ? dummyData.length : null}
+                  // page={1}
                   columns={columns}
 
                   handleReload={(params) => handleReload(params)}
@@ -530,8 +905,8 @@ export default function MarketPrediction() {
                         <MButton
                           className="flex justify-end mb-4"
                           type="submit"
-                          label={"Submit"}
-                          loading={isLoadingSubmitBulk}
+                          label={"Submit Bulk"}
+                          // loading={isLoadingSubmitBulk}
                           icon={<Send />}
                           onClick={(e) => {
                             setIsLoadingSubmitBulk(true)
@@ -540,6 +915,7 @@ export default function MarketPrediction() {
                         />
                       </ThemeProvider>
                     </Grid>
+                    {isLoadingSubmitBulk ? <CircularProgress loading={isLoadingSubmitBulk} /> : (<></>)}
                   </Grid>
                 ) : (<></>)}
 
@@ -562,19 +938,36 @@ export default function MarketPrediction() {
                       setFormData(initialValue)
                       toggleModalForm('open')
                     }}
-                    customActions={(params) => renderBulkButton(params)}
+                    customActions={(params) => renderActions(params)}
                     // toggleResetAll={queryParams.resetDatatable}ha
                     // toggleResetPage={queryParams.resetPage}
                     manualNumbering={false}
                   />
+                  <Grid container className="flex justify-end">
+                    <Grid item xs={12} className="flex justify-end">
+                      <ThemeProvider theme={secondaryButton}>
+                        <MButton
+                          label={'UPDATE ALL'}
+                          icon={<Send />}
+                          onClick={(e) => {
+                            updateVehicleBulk(e, predictionDataBulk)
+                          }
+                          }
+                        />
+                      </ThemeProvider>
+                    </Grid>
+                    {isLoadingSubmitBulk ? <CircularProgress loading={isLoadingSubmitBulk} /> : (<></>)}
+                  </Grid>
+
+
                 </>) : (<></>)}
               </div>
             )}
 
           </div>
-        </AccordionDetails>
-      </Accordion>
-    </div>
+        </AccordionDetails >
+      </Accordion >
+    </div >
   }
 
 
@@ -626,37 +1019,49 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? convDate(value, 'DD/MM/YYYY') : "-"),
     },
     {
-      name: "wilayah_kendaraan",
+      name: "lokasi",
       label: "Lokasi",
-      display: false,
+      display: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "nama_kendaraan",
+      name: "desciption",
       label: "Description",
       display: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "tahun_kendaraan",
+      name: "jenismobil",
+      label: "Jenis Mobil",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "transmisi",
+      label: "Transmisi",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "year",
       label: "Year",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "warna_kendaraan",
+      name: "color",
       label: "Color",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "nomor_kendaraan",
+      name: "nopol",
       label: "Nopol",
       display: false,
       customBodyRender: (value) => (value ? convDate(value, 'DD/MM/YYYY') : "-"),
     },
     {
-      name: "pajak_kendaraan",
+      name: "pajak",
       label: "Pajak",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
@@ -674,34 +1079,34 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "grade_interior",
+      name: "gradeinterior",
       label: "Grade Interior",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "grade_body",
+      name: "gradebody",
       label: "Grade Body",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "grade_mesin",
+      name: "grademesin",
       label: "Grade Mesin",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "jarak_tempuh_kendaraan",
+      name: "km",
       label: "KM",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "harga_terendah",
+      name: "bottom_price",
       label: "Bottom Price",
-      display: true,
-      customBodyRender: (value) => (value ? thousandSeparator(value) : "-"),
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
     },
     {
       name: "status",
@@ -716,22 +1121,28 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "transmisi_kendaraan",
-      label: "Transmisi Kendaraan",
+      name: "nama_mobil",
+      label: "Nama Mobil",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "bahan_bakar",
-      label: "Bahan Bakar",
-      display: false,
-      customBodyRender: (value) => (value ? value : "-"),
-    },
-    {
-      name: "harga_tertinggi",
-      label: "Bottom Price",
+      name: "harga_bawah",
+      label: "Harga Terbawah",
       display: true,
-      customBodyRender: (value) => (value ? thousandSeparator(value) : "-"),
+      customBodyRender: (value) => (isNumber(value) ? `Rp. ${thousandSeparator(value)}` : "Tidak Diketahui"),
+    },
+    {
+      name: "harga_atas",
+      label: "Harga Teratas",
+      display: true,
+      customBodyRender: (value) => (isNumber(value) ? `Rp. ${thousandSeparator(value)}` : "Tidak Diketahui"),
+    },
+    {
+      name: "umurmobil",
+      label: "Umur Mobil",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
     },
 
   ];
@@ -761,25 +1172,37 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "tahun_kendaraan",
+      name: "jenismobil",
+      label: "Jenis Mobil",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "transmisi",
+      label: "Transmisi",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "year",
       label: "Year",
       display: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "warna_kendaraan",
+      name: "color",
       label: "Color",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "nomor_kendaraan",
+      name: "nopol",
       label: "Nopol",
       display: false,
       customBodyRender: (value) => (value ? convDate(value, 'DD/MM/YYYY') : "-"),
     },
     {
-      name: "pajak_kendaraan",
+      name: "pajak",
       label: "Pajak",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
@@ -797,31 +1220,31 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "grade_interior",
+      name: "gradeinterior",
       label: "Grade Interior",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "grade_body",
+      name: "gradebody",
       label: "Grade Body",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "grade_mesin",
+      name: "grademesin",
       label: "Grade Mesin",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "jarak_tempuh_kendaraan",
+      name: "km",
       label: "KM",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "harga_terendah",
+      name: "bottom_price",
       label: "Bottom Price",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
@@ -839,105 +1262,32 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "transmisi_kendaraan",
-      label: "Transmisi Kendaraan",
+      name: "nama_mobil",
+      label: "Nama Mobil",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "bahan_bakar",
-      label: "Bahan Bakar",
+      name: "harga_bawah",
+      label: "Harga Terbawah",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "harga_atas",
+      label: "Harga Teratas",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "umurmobil",
+      label: "Umur Mobil",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
 
+
   ];
-  const dummyData = [
-    {
-      id: 1,
-      tanggal_jual: "1/4/2023",
-      wilayah_kendaraan: "PEKANBARU",
-      nama_kendaraan: "DAIHATSU-GREAT NEW XENIA-M DELUXE 1.3 MT",
-      tahun_kendaraan: '2015',
-      warna_kendaraan: 'PUTIH',
-      nomor_kendaraan: 'BXXXXTFR',
-      pajak_kendaraan: null,
-      stnk: null,
-      grade_all: 'D',
-      grade_interior: 'D',
-      grade_body: 'D',
-      grade_mesin: 'D',
-      jarak_tempuh_kendaraan: '150595',
-      harga_terendah: '62000000',
-      status: 'SOLD',
-      harga_terbentuk: '64000000',
-      transmisi_kendaraan: "Manual",
-      bahan_bakar: "Bensin"
-    },
-    {
-      id: 2,
-      tanggal_jual: "1/4/2023",
-      wilayah_kendaraan: "PEKANBARU",
-      nama_kendaraan: "SUZUKI CARRY 1.5 PU BOX",
-      tahun_kendaraan: '2016',
-      warna_kendaraan: 'Hitam',
-      nomor_kendaraan: 'BAXXXXBA',
-      pajak_kendaraan: null,
-      stnk: null,
-      grade_all: 'C',
-      grade_interior: 'C',
-      grade_body: 'C',
-      grade_mesin: 'C',
-      jarak_tempuh_kendaraan: '241626',
-      harga_terendah: '55000000',
-      status: 'SOLD',
-      harga_terbentuk: '58000000',
-      transmisi_kendaraan: "Manual",
-      bahan_bakar: "Bensin"
-    },
-    {
-      id: 3,
-      tanggal_jual: "1/4/2023",
-      wilayah_kendaraan: "BEKASI",
-      nama_kendaraan: "HONDA-MOBILIO-E 1.5 AT CVT",
-      tahun_kendaraan: '2014',
-      warna_kendaraan: 'ABU ABU METALIK',
-      nomor_kendaraan: 'BXXXXKYS',
-      pajak_kendaraan: null,
-      stnk: null,
-      grade_all: 'C',
-      grade_interior: 'C',
-      grade_body: 'D',
-      grade_mesin: 'C',
-      jarak_tempuh_kendaraan: '94991',
-      harga_terendah: '75000000',
-      status: 'SOLD',
-      harga_terbentuk: '95000000',
-      transmisi_kendaraan: "Manual",
-      bahan_bakar: "Bensin"
-    },
-    {
-      id: 3,
-      tanggal_jual: "2/4/2023",
-      wilayah_kendaraan: "JAKARTA",
-      nama_kendaraan: "TOYOTA-NEW INNOVA-BENSIN G 2.0 MT",
-      tahun_kendaraan: '2021',
-      warna_kendaraan: 'HITAM',
-      nomor_kendaraan: 'BXXXXSSS',
-      pajak_kendaraan: null,
-      stnk: null,
-      grade_all: 'B',
-      grade_interior: 'B',
-      grade_body: 'B',
-      grade_mesin: 'B',
-      jarak_tempuh_kendaraan: '25000',
-      harga_terendah: '75000000',
-      status: 'SOLD',
-      harga_terbentuk: '95000000',
-      transmisi_kendaraan: "Manual",
-      bahan_bakar: "Bensin"
-    }
-  ]
 
   const handleReload = (params) => {
     setVehicleQuery({
@@ -951,41 +1301,6 @@ export default function MarketPrediction() {
     })
   }
 
-  const handleResetForm = () => {
-    setFormData({
-      document_name: null,
-      quotation_number: null,
-      customer_name: null,
-      customer_address: null,
-      customer_phone: null,
-      customer_company: null,
-      project_name: null,
-      products: [{
-        product_name: null,
-        quantity: null,
-        price: null,
-      }],
-      ppn: null,
-      note: null,
-      document_date: null,
-    })
-
-    setErrorMessage({
-      document_name: null,
-      quotation_number: null,
-      customer_name: null,
-      customer_address: null,
-      customer_phone: null,
-      customer_company: null,
-      project_name: null,
-      products: null,
-      ppn: null,
-      note: null,
-      document_date: null,
-    })
-    setIsUpdate(false)
-
-  }
 
   const toggleModalForm = (type, params) => {
     if (type === 'open') {
@@ -1012,11 +1327,7 @@ export default function MarketPrediction() {
       }
       setModalCreate(true)
     } else if (type === 'close') {
-      handleResetForm()
-      setModalCreate(false)
     } else {
-      setModalCreate(false)
-      handleResetForm()
     }
   }
 
@@ -1041,7 +1352,7 @@ export default function MarketPrediction() {
     if (response.data?.error) {
       setIsLoadingSubmitBulk(false)
     } else {
-      if (response.status_code === 200) {
+      if (response.status === 200) {
         setPredictionDataBulk(response.data)
         setIsLoadingSubmitBulk(false)
         enqueueSnackbar("Success", { variant: "success" })
@@ -1054,6 +1365,165 @@ export default function MarketPrediction() {
       }
     }
     setIsLoadingSubmitBulk(false)
+  }
+
+  const updateVehicleData = async (e, params) => {
+    e.preventDefault()
+    showPopup(
+      'confirm',
+      'Are you sure you want to update this data?',
+      'Yes',
+      async (e) => {
+        const {
+          id,
+          nama_kendaraan,
+          market_prediction
+        } = params
+
+
+        let harga_bawah = market_prediction.harga_terendah
+        if (isNumber(harga_bawah) === false) {
+          harga_bawah = Number(harga_bawah?.replace("Rp ", "").replace(/\./g, "").replace(",", ""));
+        }
+        let harga_atas = market_prediction.harga_tertinggi
+        if (isNumber(harga_atas) === false) {
+          harga_atas = Number(harga_atas?.replace("Rp ", "").replace(/\./g, "").replace(",", ""));
+        }
+
+        // error required condition
+
+        const datas = {
+          vehicles: [
+            {
+              ...id && { id: id },
+              ...nama_kendaraan && { desciption: nama_kendaraan },
+              ...harga_atas && { harga_atas: harga_atas },
+              ...harga_bawah && { harga_bawah: harga_bawah },
+            }
+          ]
+        }
+
+        const response = await updateVehicles(datas)
+        if (response.data?.error) {
+          return setErrorMessage(response.data?.error)
+        } else {
+          if (response.status === 200) {
+            enqueueSnackbar("Success Update Data", { variant: "success" })
+            setIsPredictedData(false)
+            mutateVehicleData()
+          } else {
+            enqueueSnackbar("Something went wrong", { variant: "error" })
+            mutateVehicleData()
+          }
+        }
+      }
+    );
+  }
+
+  const updateVehicleDatas = async (e, params) => {
+    e.preventDefault()
+    showPopup(
+      'confirm',
+      'Are you sure you want to update this data?',
+      'Yes',
+      async (e) => {
+        const {
+          id,
+          desciption,
+          harga_bawah,
+          harga_atas,
+        } = params
+        toggleModalDetail('close')
+        let harga_terendah = harga_bawah
+        if (isNumber(harga_terendah) === false) {
+          harga_terendah = Number(harga_terendah?.replace("Rp ", "").replace(/\./g, "").replace(",", ""));
+        }
+
+        let harga_tertinggi = harga_atas
+        if (isNumber(harga_tertinggi) === false) {
+          harga_tertinggi = Number(harga_tertinggi?.replace("Rp ", "").replace(/\./g, "").replace(",", ""));
+        }
+
+        // error required condition
+
+        const datas = {
+          vehicles: [
+            {
+              ...id && { id: id },
+              ...desciption && { desciption: desciption },
+              ...harga_tertinggi && { harga_atas: harga_tertinggi },
+              ...harga_terendah && { harga_bawah: harga_terendah },
+            }
+          ]
+        }
+        const response = await updateVehicles(datas)
+        if (response.data?.error) {
+          return setErrorMessage(response.data?.error)
+        } else {
+          if (response.status === 200) {
+            enqueueSnackbar("Success Update Data", { variant: "success" })
+            setIsPredictedData(false)
+            mutateVehicleData()
+            let newData = predictionDataBulk
+            newData = newData.filter(item => item.id !== id)
+            setPredictionDataBulk(newData)
+            let newDatas = bulkData
+            newDatas = newDatas.filter(item => item.id !== params[1])
+            setBulkData(newDatas)
+          } else {
+            enqueueSnackbar("Something went wrong", { variant: "error" })
+            mutateVehicleData()
+          }
+        }
+      }
+    );
+  }
+  const updateVehicleBulk = async (e, params) => {
+    e.preventDefault()
+    showPopup(
+      'confirm',
+      'Are you sure you want to update all the result?',
+      'Yes',
+      async (e) => {
+        // return console.log(params)
+        let newData = {
+          vehicles: []
+        }
+        params.map((item) => {
+          let harga_terendah = item.harga_bawah
+          if (isNumber(harga_terendah) === false) {
+            harga_terendah = Number(harga_terendah?.replace("Rp ", "").replace(/\./g, "").replace(",", ""));
+          }
+
+          let harga_tertinggi = item.harga_atas
+          if (isNumber(harga_tertinggi) === false) {
+            harga_tertinggi = Number(harga_tertinggi?.replace("Rp ", "").replace(/\./g, "").replace(",", ""));
+          }
+          newData.vehicles.push({
+            ...item.id && { id: item.id },
+            ...item.desciption && { desciption: item.desciption },
+            ...item.harga_tertinggi && { harga_atas: item.harga_tertinggi },
+            ...item.harga_terendah && { harga_bawah: item.harga_terendah },
+          })
+        })
+
+        const response = await updateVehicles(newData)
+        if (response.data?.error) {
+          return setErrorMessage(response.data?.error)
+        } else {
+          if (response.status === 200) {
+            enqueueSnackbar("Success Update Data", { variant: "success" })
+            setIsPredictedData(false)
+            mutateVehicleData()
+            setPredictionDataBulk(null)
+            setBulkData([])
+          } else {
+            enqueueSnackbar("Something went wrong", { variant: "error" })
+            mutateVehicleData()
+          }
+        }
+      }
+    );
   }
 
   const handleSubmitSinglePredict = async (e) => {
@@ -1081,15 +1551,17 @@ export default function MarketPrediction() {
       ...bahan_bakar && { bahan_bakar: bahan_bakar },
       ...wilayah_kendaraan && { wilayah_kendaraan: wilayah_kendaraan },
     }
-
+    setIsLoadingSubmit(false)
     const response = await submitSinglePredict(params)
-    setIsLoadingSubmit(true)
     if (response.data?.error) {
       setIsLoadingSubmit(false)
       return setErrorMessage(response.data?.error)
     } else {
       if (response.status_code === 200) {
-        setPredictionData(response.data)
+        setPredictionData({
+          ...response.data,
+          id: id ? id : null
+        })
         setIsLoadingSubmit(false)
         enqueueSnackbar("Success", { variant: "success" })
         // console.log(response);
@@ -1104,9 +1576,11 @@ export default function MarketPrediction() {
   }
 
 
+
   return (
     <>
       <div>
+        {renderModalDetail()}
         {renderPredictionAccordion()}
         {tabsValue === 0 ? <Datatable
           creatable={false}

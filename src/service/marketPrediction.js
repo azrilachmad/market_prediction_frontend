@@ -34,6 +34,29 @@ export const getVehicleList = async (params) => {
 
 };
 
+export const updateVehicles = async (params) => {
+
+  // return console.log(params)
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  }
+
+  try {
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_URL}/vehicles`, params, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+    return error.response
+  }
+
+};
+
 
 export const submitSinglePredict = async (params) => {
   const {
