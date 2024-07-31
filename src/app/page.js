@@ -9,8 +9,8 @@ import { useRouter } from 'next/navigation'
 import React, { Component, useEffect, useState } from 'react'
 import { getCookieValueByKey, setCookieValue } from '@/helpers'
 import { useMutation } from 'react-query'
-import { loginUser } from '../service/auth'
 import { enqueueSnackbar } from 'notistack'
+import Dashboard from './dashboard/page'
 
 const loginSchema = yup.object({
   email: yup.string().required('Email wajib diisi').email('Email tidak valid'),
@@ -25,25 +25,6 @@ export default function Home() {
   const [token, setToken] = useState()
   const [user_id, setUserId] = useState()
   
-
-  useEffect(() => {
-    if (localStorage.getItem('user')) setUsername(localStorage.getItem('user'))
-    if (localStorage.getItem('cred_m')) setToken(localStorage.getItem('token'))
-    if (localStorage.getItem('user_id')) setToken(localStorage.getItem('user_id'))
-    if (localStorage.getItem('cred_m')) {
-      // enqueueSnackbar('Anda sudah login!', { variant: 'warning' })
-      router.push('/dashboard');
-    }
-  }, [token, router])
-
-  const checkCustomer = useMutation({ mutationFn: loginUser });
-
-
-  const loginMethods = useForm({
-    mode: 'onChange',
-    resolver: yupResolver(loginSchema)
-  })
-
   const onSubmit = (payload) => {
     const params = {
       ...payload
@@ -61,5 +42,5 @@ export default function Home() {
     }
   }
   
-  return router.push('/dashboard')
+  return <Dashboard/>
 }

@@ -22,15 +22,6 @@ export default function RootLayout({ children }) {
   const [username, setUsername] = useState()
   const [token, setToken] = useState()
 
-  // useEffect(() => {
-
-  //   if (localStorage.getItem('user')) setUsername(localStorage.getItem('user'))
-  //   if (localStorage.getItem('cred_m')) setToken(localStorage.getItem('token'))
-
-  //   if (!localStorage.getItem('cred_m') && (path !== '/' || path === '/register')) {
-  //     return router.push('/')
-  //   }
-  // }, [toasted, path, router, token])
 
 
 

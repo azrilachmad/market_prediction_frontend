@@ -1,3 +1,5 @@
+'use client'
+
 import { convDate } from "@/helpers";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
