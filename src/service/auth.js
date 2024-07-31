@@ -18,7 +18,6 @@ import { enqueueSnackbar } from "notistack";
 //       localStorage.setItem('cred_m', response.data.token)
 //       localStorage.setItem('user', response.data.nama)
 //       localStorage.setItem('user_id', response.data.id)
-//       window.location.href = '/dashboard'
 //     }
 //   })
 // };
@@ -42,7 +41,6 @@ export const logoutUser = async () => {
       // console.log(response)
       enqueueSnackbar("Successfully logout", {variant: 'success'})
       localStorage.clear()
-      // window.location.href = '/'
       return response
     }
   } catch (error) {
