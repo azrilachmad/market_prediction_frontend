@@ -25,7 +25,7 @@ export const getVehicleList = async (params) => {
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/vehicles`, config
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles`, config
     );
     if (response) {
       return response.data
@@ -48,7 +48,7 @@ export const updateVehicles = async (params) => {
 
   try {
     const response = await axios.put(
-      `${process.env.NEXT_PUBLIC_API_URL}/vehicles`, params, config
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles`, params, config
     );
     if (response) {
       return response.data
@@ -93,7 +93,7 @@ export const submitSinglePredict = async (params) => {
 
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/vehicles`, data, config
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles`, data, config
     );
     if (response) {
       return response.data
@@ -117,7 +117,7 @@ export const submitBulkPredict = async (params) => {
 
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/bulk-predict`, data, config
+      `${process.env.NEXT_PUBLIC_API_URL}/api/bulk-predict`, data, config
     );
     if (response) {
       return response.data
