@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable no-unused-vars */
+"use client"
+
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
@@ -61,7 +63,6 @@ import MailIcon from '@mui/icons-material/Mail'
 import { deleteCookieValue, getCookieValueByKey, isArray, showPopup } from '../helpers'
 import Link from 'next/link'
 import { MButton, MInput, ModalTitle } from '../components/form'
-import { logoutUser } from '@/service/auth'
 
 const drawerWidth = 260
 
@@ -288,16 +289,6 @@ export default function Header({ pageProps }) {
     setAnchorEl(null)
   }
 
-  const handleLogout = async () => {
-    showPopup(
-      'confirm',
-      'Are you sure you want to logout?',
-      'Yes',
-      () => {
-        logoutUser()
-      }
-    )
-  }
 
   const menus = [
     {
