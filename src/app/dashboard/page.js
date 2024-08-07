@@ -197,7 +197,7 @@ export default function Dashboard() {
     const chartSetting = {
       yAxis: [
         {
-          label: 'Penjualan',
+          label: '',
         },
       ],
       height: 460,
@@ -226,7 +226,7 @@ export default function Dashboard() {
               <div>
                 {/* Bar Chart */}
                 <BarChart
-                  className="py-4"
+                  className="py-6"
                   dataset={transformDataset(vehicleSalesData?.data)}
                   xAxis={[{ scaleType: 'band', dataKey: 'month' }]}
                   series={transformDataseries(vehicleSalesData?.data)}
@@ -246,7 +246,7 @@ export default function Dashboard() {
                     {
                       data,
                       highlightScope: { faded: 'global', highlighted: 'item' },
-                      faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+                      faded: { innerRadius: 10, additionalRadius: -20, color: 'gray' },
                     },
                   ]}
                   height={438}
@@ -325,6 +325,7 @@ export default function Dashboard() {
                   menuProps={MenuProps}
                 />
                 <LineChart
+                  className="p-2"
                   height={400}
                   series={comparisonData}
                   xAxis={[{ scaleType: "point", data: comparisonMonth }]}
