@@ -9,13 +9,10 @@ import { LineChart, PieChart, pieArcLabelClasses } from "@mui/x-charts";
 /* eslint-disable react/react-in-jsx-scope */
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
-import { getPriceComparison, getVehicleAssetData, getVehicleOmset, getVehicleSalesData, getVehicleType, getVehicleTypeCountData, getVehicleTypeList } from "@/service/marketPrediction";
+import { getVehicleAssetData, getVehicleOmset, getVehicleSalesData, getVehicleType, getVehicleTypeCountData } from "@/service/marketPrediction";
 import { useQuery } from "react-query";
 import { dateTimePickerTabsClasses } from "@mui/x-date-pickers";
 import { removeDuplicateData, transformDataseries, transformDataset } from "@/helpers";
-import { MSelect } from "@/components/form";
-import { useState } from "react";
-import { enqueueSnackbar } from "notistack";
 export default function Dashboard() {
 
   const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -23,10 +20,6 @@ export default function Dashboard() {
   const thousandSeparator = (number) => {
     return addCommas(removeNonNumeric(number))
   }
-
-  const [jenisMobil, setJenisMobil] = useState(null)
-  const [comparisonData, setComparisonData] = useState([])
-  const [comparisonMonth, setComparisonMonth] = useState([])
 
   const {
     data: vehicleAssetData,
@@ -88,47 +81,6 @@ export default function Dashboard() {
     ],
     queryFn: ({ queryKey }) => getVehicleSalesData(queryKey[1]),
   });
-
-  const {
-    data: vehicleTypeListData,
-    refetch: mutateVehicleTypeListData,
-  } = useQuery({
-    queryKey: [
-      "vehicle-type-list",
-      {
-      },
-    ],
-    queryFn: ({ queryKey }) => getVehicleTypeList(queryKey[1]),
-  });
-
-  const handleInputChange = async (event) => {
-    const { name, value } = event.target
-    if (typeof value != "string") {
-      return;
-    }
-    setJenisMobil(value)
-    console.log(value)
-
-    const response = await getPriceComparison(value)
-    if (response.data?.error) {
-      
-    } else {
-      if (response.status === 200) {
-        let newMonthData = []
-        let newComparisonData = []
-        console.log(response.data)
-        response.data.map((item) => {
-          newComparisonData.push(item.avg_actual_sold_price * 1)
-          newMonthData.push(item.bulan)
-        })
-        setComparisonData([{data: newComparisonData, label: value}])
-        setComparisonMonth(newMonthData)
-      } else {
-        enqueueSnackbar("Something went wrong", { variant: "error" })
-        // mutateVehicleData()
-      }
-    }
-  }
 
   const renderCardList = () => {
     return (
@@ -197,7 +149,7 @@ export default function Dashboard() {
     const chartSetting = {
       yAxis: [
         {
-          label: '',
+          label: 'Penjualan',
         },
       ],
       height: 460,
@@ -226,7 +178,7 @@ export default function Dashboard() {
               <div>
                 {/* Bar Chart */}
                 <BarChart
-                  className="py-6"
+                  className="py-4"
                   dataset={transformDataset(vehicleSalesData?.data)}
                   xAxis={[{ scaleType: 'band', dataKey: 'month' }]}
                   series={transformDataseries(vehicleSalesData?.data)}
@@ -246,7 +198,7 @@ export default function Dashboard() {
                     {
                       data,
                       highlightScope: { faded: 'global', highlighted: 'item' },
-                      faded: { innerRadius: 10, additionalRadius: -20, color: 'gray' },
+                      faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                     },
                   ]}
                   height={438}
@@ -259,9 +211,9 @@ export default function Dashboard() {
     )
   }
   const renderChartTwo = () => {
-    const hi_data = [180, 178, 165, 176, 179, 180, 181, 180, 180, 185, 200, 185];
-    const low_data = [160, 158, 156, 157, 160, 160, 162, 162, 165, 165, 170, 165];
-    const sold_data = [170, 165, 150, 168, 168, 170, 175, 175, 175, 178, 190, 180];
+    const hi_data = [180000000, 178000000, 165000000, 176000000, 179000000, 180000000, 181000000, 180000000, 180000000, 185000000, 200000000, 185000000];
+    const low_data = [160000000, 158000000, 156000000, 157000000, 160000000, 160000000, 162000000, 162000000, 165000000, 165000000, 170000000, 165000000];
+    const sold_data = [170000000, 165000000, 150000000, 168000000, 168000000, 170000000, 175000000, 175000000, 175000000, 178000000, 190000000, 180000000];
     const months = [
       "January",
       "February",
@@ -277,58 +229,30 @@ export default function Dashboard() {
       "December"
     ];
 
-    const vehicleOption = () => {
-      const options = [
-
-      ];
-      if (vehicleTypeListData) {
-        vehicleTypeListData?.data.map((ctx) => {
-          options.push(ctx)
-        })
-      }
-
-      return options;
-    };
-
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
-    const MenuProps = {
-      PaperProps: {
-        style: {
-          maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-          width: 250,
-        },
-      },
-    };
-
-
-
     return (
       <>
         <Grid container spacing={2} className="mt-8">
           <Grid item xs={12}>
             <Paper variant="outlined" className="rounded-[10px] p-4">
               <div className="flex justify-center mb-6">
-                <Typography className="text-[32px] font-bold">Price Comparison</Typography>
+                <Typography className="text-[32px] font-bold">Sales Data</Typography>
+              </div>
+              <div className="ml-4">
+                <Typography>Mobil: <b>Toyota Avanza G MT</b></Typography> 
+              </div>
+              <div className="ml-4">
+                <Typography>Tahun: <b>2023</b></Typography> 
               </div>
               <div>
-                <Typography className="ml-6 mb-2 text-xl">Pilih Kendaraan</Typography>
-                <MSelect
-                  className='ml-6 w-[300px]'
-                  name="jenis_kendaraan"
-                  value={jenisMobil}
-                  onChange={(event) => handleInputChange(event)}
-                  // error={errorMessage ? errorMessage.jenis_kendaraan : null}
-                  keyPair={['id', 'name']}
-                  options={vehicleOption()}
-                  required
-                  menuProps={MenuProps}
-                />
                 <LineChart
-                  className="p-2"
+                className="p-2"
                   height={400}
-                  series={comparisonData}
-                  xAxis={[{ scaleType: "point", data: comparisonMonth }]}
+                  series={[
+                    { data: low_data, label: "Market Top Price" },
+                    { data: hi_data, label: "Market Bottom Price" },
+                    { data: sold_data, label: "Actual Sold Price" }
+                  ]}
+                  xAxis={[{ scaleType: "point", data: months }]}
                 />
               </div>
             </Paper>
