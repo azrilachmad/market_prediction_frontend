@@ -36,6 +36,162 @@ export const getVehicleList = async (params) => {
 
 };
 
+export const getPriceComparison = async (params) => {
+
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    params: {
+      ...params && { jenisMobil: params },
+    }
+  }
+
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles/comparison`, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+
+  }
+
+};
+
+export const getVehicleAssetData = async (params) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    params: {
+    }
+  }
+
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles/count`, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+
+  }
+
+};
+export const getVehicleTypeCountData = async (params) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    params: {
+    }
+  }
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles/count-type`, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+  }
+};
+
+export const getVehicleOmset = async (params) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    params: {
+    }
+  }
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles/omset`, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+  }
+};
+
+export const getVehicleType = async (params) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    params: {
+    }
+  }
+
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles/car-type`, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+
+  }
+
+};
+
+export const getVehicleSalesData = async (params) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    params: {
+    }
+  }
+
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles/sales`, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+
+  }
+
+};
+
+export const getVehicleTypeList = async (params) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    params: {
+    }
+  }
+
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles/list`, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+
+  }
+
+};
+
 export const updateVehicles = async (params) => {
 
   // return console.log(params)

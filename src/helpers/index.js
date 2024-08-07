@@ -1,3 +1,4 @@
+import { Label } from "@mui/icons-material"
 import { deleteCookie, getCookie, setCookie } from "cookies-next"
 import dayjs from "dayjs"
 import Swal from "sweetalert2"
@@ -44,6 +45,98 @@ export const setCookieValue = (
 export const deleteCookieValue = (value) => {
   deleteCookie(value);
 };
+export const removeDuplicateData = (value) => {
+
+  // Create an array of objects
+
+
+  // Declare a new array
+  let newArray = [];
+
+  // Declare an empty object
+  let uniqueObject = {};
+
+  // Loop for the array elements
+  for (let i in value) {
+
+    // Extract the title
+    let objTitle = value[i]['bulan'];
+
+    // Use the title as the index
+    uniqueObject[objTitle] = value[i];
+  }
+
+  // Loop to push unique object into array
+  for (let i in uniqueObject) {
+    newArray.push(uniqueObject[i].bulan);
+  }
+  return newArray
+};
+
+export const transformDataseries = (originalData) => {
+  const transformedData = [];
+  const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
+  const thousandSeparator = (number) => {
+    return addCommas(removeNonNumeric(number))
+  }
+  // Group data by month and calculate totals
+  originalData?.forEach(data => {
+    const month = data.bulan;
+    const brand = data.mobil;
+    const harga = data.harga
+    const valueFormatter = (value) => `Rp${thousandSeparator(value)}`;
+
+
+    // Find the corresponding month object in the transformed data
+    transformedData.push({
+      dataKey: brand,
+      label: brand,
+      valueFormatter
+    })
+  });
+
+  function removeDuplicatesByDataKey(dataArray) {
+    const uniqueKeys = new Set();
+    return dataArray.filter(item => {
+      if (uniqueKeys.has(item.dataKey)) {
+        return false; // Skip if the key already exists in the Set
+      }
+      uniqueKeys.add(item.dataKey);
+      return true;
+    });
+  }
+
+  const uniqueData = removeDuplicatesByDataKey(transformedData);
+  return uniqueData
+}
+
+export const transformDataset = (originalData) => {
+  const transformedData = [];
+
+  // Group data by month and calculate totals
+  originalData?.forEach(data => {
+    const month = data.bulan;
+    const brand = data.mobil;
+    const harga = data.harga
+
+    // Find the corresponding month object in the transformed data
+    const monthData = transformedData.find(item => item.month === month);
+
+    if (monthData) {
+      // If the month already exists, update the brand's total
+      monthData[brand] = harga;
+    } else {
+      // If the month doesn't exist, create a new object
+      transformedData.push({
+        month,
+        [brand]: harga
+      });
+    }
+  });
+
+  return transformedData
+}
 
 export const getCookieValueByKey = (key) => {
   const data = getCookie(key) ?? "";

@@ -132,7 +132,7 @@ export default function MarketPrediction() {
   const toggleModalDetail = (type, params) => {
     // return console.log(params)
     if (type === 'open') {
-      console.log(params)
+      // console.log(params)
       setIsPredictedData(false)
       setDetailVehicleData({
         id: params[1],
@@ -638,27 +638,6 @@ export default function MarketPrediction() {
               inputProps={{ 'aria-label': 'controlled' }}
             />
           </div>
-        </div>
-      )
-    }
-
-    const renderBulkButton = (params) => {
-      return (
-        <div>
-          <>
-            <div style={{ display: "inline", marginRight: "5px" }}>
-              <Tooltip title="Detail">
-                <Button
-                  variant="contained"
-                  // color="primary"
-                  size="small"
-                  className="bg-[#2DC2BD] shadow-none text-white min-w-[10px] pr-0"
-                  onClick={() => console.log(params)}
-                  startIcon={<Search />}
-                ></Button>
-              </Tooltip>
-            </div>
-          </>
         </div>
       )
     }

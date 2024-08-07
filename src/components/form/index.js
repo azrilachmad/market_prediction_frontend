@@ -142,7 +142,7 @@ export const ModalTitle = ({ title, onClose, ...props }) => {
   );
 };
 
-export const MSelect = ({ fullWidth, shrink, className, error, keyPair, options, variant, loading, required, ...props }) => {
+export const MSelect = ({ menuProps, fullWidth, shrink, className, error, keyPair, options, variant, loading, required, ...props }) => {
   const renderOptions = (options) => {
     return options.map((value) => {
       // destructure the data row based on keyPair array value
@@ -166,6 +166,7 @@ export const MSelect = ({ fullWidth, shrink, className, error, keyPair, options,
         variant={variant ? variant : 'outlined'}
         IconComponent={loading ? () => <CircularProgress color="inherit" size={15} style={{ marginRight: 15 }} /> : undefined}
         required={required ? true : false}
+        MenuProps={menuProps}
         {...props}
       >
         {renderOptions(options)}
