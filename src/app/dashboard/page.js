@@ -89,12 +89,12 @@ export default function Dashboard() {
           <Grid item xs={4} className="mt-4">
             <Paper variant="outlined" className="rounded-[10px]">
               <div className="flex">
-                <div className="flex justify-center items-center bg-[#2DC2BD] w-[150px] rounded-l-[10px] p-4">
+                <div className="flex justify-center items-center bg-[#2DC2BD] w-[100px] rounded-l-[10px] p-4">
                   <Icon className="text-white text-[48px]" component={DirectionsCarIcon} />
                 </div>
                 <div className="p-6">
-                  <Typography className="text-[32px]"><b>{thousandSeparator(vehicleAssetData?.data ? vehicleAssetData?.data : 0)} Unit</b></Typography>
-                  <Typography className="text-[24px]">Jumlah Asset</Typography>
+                  <Typography className="text-[20px]"><b>{thousandSeparator(vehicleAssetData?.data ? vehicleAssetData?.data : 0)} Unit</b></Typography>
+                  <Typography className="text-[14px]">Jumlah Asset</Typography>
                 </div>
               </div>
             </Paper>
@@ -102,12 +102,12 @@ export default function Dashboard() {
           <Grid item xs={4} className="mt-4">
             <Paper variant="outlined" className="rounded-[10px]">
               <div className="flex">
-                <div className="flex justify-center items-center bg-[#E5AF5A] w-[150px] rounded-l-[10px] p-4">
+                <div className="flex justify-center items-center bg-[#E5AF5A] w-[100px] rounded-l-[10px] p-4">
                   <Icon className="text-white text-[48px]" component={BarChartIcon} />
                 </div>
                 <div className="p-6">
-                  <Typography className="text-[32px]"><b>{vehicleTypeCountData?.data ? `${thousandSeparator(vehicleTypeCountData?.data)} Jenis` : '0'}</b></Typography>
-                  <Typography className="text-[24px]">Jumlah Jenis Mobil</Typography>
+                  <Typography className="text-[20px]"><b>{vehicleTypeCountData?.data ? `${thousandSeparator(vehicleTypeCountData?.data)} Jenis` : '0'}</b></Typography>
+                  <Typography className="text-[14px]">Jumlah Jenis Mobil</Typography>
                 </div>
               </div>
             </Paper>
@@ -115,12 +115,12 @@ export default function Dashboard() {
           <Grid item xs={4} className="mt-4">
             <Paper variant="outlined" className="rounded-[10px]">
               <div className="flex">
-                <div className="flex justify-center items-center bg-[#9CE37D] w-[150px] rounded-l-[10px] p-4">
+                <div className="flex justify-center items-center bg-[#9CE37D] w-[100px] rounded-l-[10px] p-4">
                   <Icon className="text-white text-[48px]" component={SubdirectoryArrowRightIcon} />
                 </div>
                 <div className="p-6">
-                  <Typography className="text-[32px]"><b>{vehicleOmsetData?.data ? `Rp${thousandSeparator(vehicleOmsetData?.data)}` : '0'}</b></Typography>
-                  <Typography className="text-[24px]">Total Omset</Typography>
+                  <Typography className="text-[20px]"><b>{vehicleOmsetData?.data ? `Rp${thousandSeparator(vehicleOmsetData?.data)}` : '0'}</b></Typography>
+                  <Typography className="text-[14px]">Total Omset</Typography>
                 </div>
               </div>
             </Paper>
@@ -169,16 +169,16 @@ export default function Dashboard() {
     return (
       <>
         <Grid container spacing={2} className="mt-8">
-          <Grid item xs={8}>
-            <Paper variant="outlined" className="rounded-[10px] p-6">
+          <Grid item xs={6}>
+            <Paper variant="outlined" className="rounded-[10px] py-6">
               <div className="flex justify-center mb-6">
-                <Typography className="text-[32px] font-bold">Top Sales Performance by Car Type
+                <Typography className="text-[20px] font-bold">Top Sales Performance by Car Type
                 </Typography>
               </div>
               <div>
                 {/* Bar Chart */}
                 <BarChart
-                  className="py-4"
+                  className="py-8 ml-4"
                   dataset={transformDataset(vehicleSalesData?.data)}
                   xAxis={[{ scaleType: 'band', dataKey: 'month' }]}
                   series={transformDataseries(vehicleSalesData?.data)}
@@ -187,13 +187,14 @@ export default function Dashboard() {
               </div>
             </Paper>
           </Grid>
-          <Grid item xs={4}>
-            <Paper variant="outlined" className="rounded-[10px] pt-4 pb-10 pl-4 pr-4">
+          <Grid item xs={6}>
+            <Paper variant="outlined" className="rounded-[10px] pt-4 pb-10 pl-4 pr-4 h-[565px] items-center">
               <div className="flex justify-center mb-6">
-                <Typography className="text-[32px] font-bold">Top 10 Best Selling Cars 2023</Typography>
+                <Typography className="text-[20px] font-bold">Top 10 Best Selling Cars 2023</Typography>
               </div>
-              <div style={{ marginLeft: 24, }}>
+              <div style={{ marginLeft: 24}}>
                 <PieChart
+                className="mt-24"
                   series={[
                     {
                       data,
@@ -201,7 +202,7 @@ export default function Dashboard() {
                       faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                     },
                   ]}
-                  height={438}
+                  height={338}
                 />
               </div>
             </Paper>
