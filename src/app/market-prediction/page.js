@@ -35,7 +35,7 @@ export default function MarketPrediction() {
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false)
   const [isLoadingSubmitBulk, setIsLoadingSubmitBulk] = useState(false)
   const [predictionData, setPredictionData] = useState()
-  const [predictionDataBulk, setPredictionDataBulk] = useState()
+  const [predictionDataBulk, setPredictionDataBulk] = useState([])
 
 
   const [bulkData, setBulkData] = useState([])
@@ -156,8 +156,8 @@ export default function MarketPrediction() {
         status: params[18],
         harga_terbentuk: params[19],
         nama_mobil: params[20],
-        harga_atas: params[21],
-        harga_bawah: params[22],
+        harga_atas: params[22],
+        harga_bawah: params[21],
       })
       setModalDetail(true)
     } else if (type === 'close') {
@@ -889,6 +889,7 @@ export default function MarketPrediction() {
                           icon={<Send />}
                           onClick={(e) => {
                             setIsLoadingSubmitBulk(true)
+                            setPredictionDataBulk(null)
                             handleSubmitBulkPredict(e)
                           }}
                         />
@@ -1481,8 +1482,8 @@ export default function MarketPrediction() {
           newData.vehicles.push({
             ...item.id && { id: item.id },
             ...item.desciption && { desciption: item.desciption },
-            ...item.harga_tertinggi && { harga_atas: item.harga_tertinggi },
-            ...item.harga_terendah && { harga_bawah: item.harga_terendah },
+            ...harga_tertinggi && { harga_atas: harga_tertinggi },
+            ...harga_terendah && { harga_bawah: harga_terendah },
           })
         })
 
@@ -1494,7 +1495,7 @@ export default function MarketPrediction() {
             enqueueSnackbar("Success Update Data", { variant: "success" })
             setIsPredictedData(false)
             mutateVehicleData()
-            setPredictionDataBulk(null)
+            setPredictionDataBulk([])
             setBulkData([])
           } else {
             enqueueSnackbar("Something went wrong", { variant: "error" })
