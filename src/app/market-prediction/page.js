@@ -837,6 +837,18 @@ export default function MarketPrediction() {
                     }) : <></>}
                   </div>
 
+                  <Grid container className="mt-4">
+                    <Grid item xs={3}>
+                      <Typography className="mb-2 font-[500]">Tanggal Iklan Terbaru</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography className="mb-2 font-[500] mr-2">:</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography className="mb-2 "> {predictionData.market_prediction.tanggal_posting ? convDate(predictionData.market_prediction.tanggal_posting, 'DD MMMM YYYY') : null}</Typography>
+                    </Grid>
+                  </Grid>
+
                   {isPredictedData ? (<ThemeProvider theme={secondaryButton}>
                     <MButton
                       className="flex justify-end mb-4 mt-4"
