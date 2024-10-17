@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
       <head>
         <title>POC PT.SIP</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Hydragi Internal Apps" />
+        <meta name="description" content="Market Prediction Apps" />
         <link rel="icon" href="/favicon.ico" />
       </head>
       <QueryClientProvider client={queryClient}>

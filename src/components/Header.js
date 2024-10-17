@@ -312,7 +312,6 @@ export default function Header({ pageProps }) {
     //   title: 'My Contact',
     //   icon: (
     //     <Image
-    //       src="/logo/hydragi-icon.png"
     //       alt="Prospective Client Logo"
     //       width={22}
     //       height={22}
