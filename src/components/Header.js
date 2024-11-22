@@ -366,7 +366,7 @@ export default function Header({ pageProps }) {
 
   return (
     <div>
-      {path === '/' || path === '/404' ? (<>\
+      {path === '/' || path === '/404' ? (<>
         {pageProps}
       </>
       ) : (
