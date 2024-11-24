@@ -505,8 +505,6 @@ export const Datatable = (props) => {
           },
           onColumnSortChange: (changedColumn, direction) => {
             const { page, limit, sortBy, order } = state;
-            // console.log('changedColumn', changedColumn)
-            // console.log('direction', direction)
             setState({
               ...state,
               page: page,

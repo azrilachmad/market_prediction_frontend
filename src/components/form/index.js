@@ -182,7 +182,6 @@ export const MInput = ({
   label,
   placeholder,
   variant,
-  error,
   errorMessage,
   onBlur,
   inputProps,
