@@ -7,13 +7,14 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import React, { Component, useEffect, useState } from 'react'
-import { getCookieValueByKey, setCookieValue } from '@/helpers'
 import { useMutation } from 'react-query'
 import { enqueueSnackbar } from 'notistack'
 import Dashboard from './dashboard/page'
 import Image from 'next/image'
 
 import logoSIP from './../assets/images/SIP.png';
+import { loginUser } from '@/service/auth'
+import { setCookie  } from 'nookies'
 
 const loginSchema = yup.object({
   email: yup.string().required('Email wajib diisi').email('Email tidak valid'),
@@ -41,7 +42,7 @@ export default function Home() {
       return;
     }
     setFormData({ ...formData, [name]: value })
-    // setErrorMessage({ ...errorMessage, [name]: null })
+    setErrorMessage({ ...errorMessage, [name]: null })
   }
 
   const {
@@ -52,8 +53,32 @@ export default function Home() {
 
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
-    console.log(formData)
-    return;
+
+    const { email, password } = formData
+
+    const params = {
+      email: email,
+      password: password,
+    }
+
+    const response = await loginUser(params)
+
+    if (response.data?.status === 'Failed') {
+
+      if (response.data.message === "Please provide email and password") {
+        setErrorMessage({
+          email: 'error',
+          password: 'error'
+        })
+      }
+      enqueueSnackbar(response.data.message, { variant: 'error' })
+    } else if (response.data?.status === 'Success') {
+      enqueueSnackbar('Logged In', { variant: 'success' })
+      setCookie(null, 'token', response.data.token)
+      router.push('/dashboard')
+    }
+
+
   }
 
   return <>
@@ -87,7 +112,7 @@ export default function Home() {
                 value={email}
                 onChange={(event) => handleInputChange(event)}
                 type="email"
-              // errorMessage={errorMessage && errorMessage?.email ? errorMessage?.email[0] : false}
+                error={errorMessage && errorMessage.email ? true : false}
               />
             </div>
             <div className='mt-4'>
@@ -100,8 +125,7 @@ export default function Home() {
                 value={password}
                 onChange={(event) => handleInputChange(event)}
                 type="password"
-              // errorMessage={errorMessage && errorMessage?.password ? errorMessage?.password[0] : false}
-              />
+                error={errorMessage && errorMessage.password ? true : false} />
             </div>
             <div className='mt-6 flex justify-end '>
               <MButton
