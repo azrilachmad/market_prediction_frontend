@@ -408,8 +408,7 @@ export default function Header({ pageProps }) {
         }
         const userResponse = await getUserData(params)
 
-        if (userResponse?.data && userResponse?.data.status !== 'Failed') {
-          setCookie(null, 'authenticated', true)
+        if (userResponse?.data.id && cookies.token && userResponse?.data.status !== 'Failed') {
           if (path === '/') {
             router.push('/dashboard')
           }

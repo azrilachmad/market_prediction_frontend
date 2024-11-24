@@ -76,6 +76,7 @@ export default function Home() {
     } else if (response.data?.status === 'Success') {
       enqueueSnackbar('Logged In', { variant: 'success' })
       setCookie(null, 'token', response.data.token)
+      setCookie(null, 'authenticated', response.data.token)
       router.push('/dashboard')
     }
 
