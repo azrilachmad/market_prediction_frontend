@@ -14,9 +14,6 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { getCookieValueByKey } from '@/helpers'
-import { getUserData } from '@/service/auth'
-import { getCookies, setCookie, } from 'cookies-next'
-import { parseCookies } from 'nookies'
 
 export default function RootLayout({ children }) {
   const router = useRouter()
@@ -25,26 +22,10 @@ export default function RootLayout({ children }) {
   const [username, setUsername] = useState()
   const [token, setToken] = useState()
 
+
+
+
   const queryClient = new QueryClient()
-
-
-  useEffect(() => {
-    (
-      async () => {
-        const cookies = parseCookies('token')
-        const params = {
-          token: cookies.token
-        }
-        const response = await getUserData(params)
-
-        // if (response.data.status === 'Failed' && path !== '/') {
-        //   router.push('/')
-        //   enqueueSnackbar("Silakan login terlebih dahulu", { variant: 'error' })
-        // }
-      }
-    )();
-  },);
-
   return (
     <html lang="en">
       <head>
@@ -58,7 +39,7 @@ export default function RootLayout({ children }) {
           <ThemeProvider theme={lightTheme}>
             <body id="__next">
               <CssBaseline />
-              <Headers pageProps={children} />
+                <Headers pageProps={children} />
             </body>
           </ThemeProvider>
         </SnackbarProvider>

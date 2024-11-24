@@ -140,7 +140,7 @@ export const transformDataset = (originalData) => {
 
 export const getCookieValueByKey = (key) => {
   const data = getCookie(key) ?? "";
-  return data ? JSON.parse(data) : null;
+  return data ? data : null;
 };
 
 
