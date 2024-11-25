@@ -64,9 +64,11 @@ import { deleteCookieValue, getCookieValueByKey, isArray, showPopup } from '../h
 import Link from 'next/link'
 import { MButton, MInput, ModalTitle } from '../components/form'
 import { parseCookies, setCookie } from 'nookies'
-import { getUserData } from '@/service/auth'
+import { getUserData, logoutUser } from '@/service/auth'
 import { enqueueSnackbar } from 'notistack'
 import { parseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
+import profileIcon from './../assets/images/profile.png';
+
 
 const drawerWidth = 260
 
@@ -396,6 +398,22 @@ export default function Header({ pageProps }) {
     }
   }
 
+  const handleLogout = () => {
+    showPopup(
+      'confirm',
+      'Are you sure you want to logout?',
+      'Yes',
+      async () => {
+        const response = await logoutUser()
+        if (response.message === 'Successfully logged out') {
+          router.push('/')
+        }
+      }
+    )
+  }
+
+
+  const [profileName, setProfileName] = useState('')
   const menuTitle = getMenuTitle()
   const open = Boolean(anchorEl)
   const cookie = getCookieValueByKey('authenticated')
@@ -407,8 +425,9 @@ export default function Header({ pageProps }) {
           token: cookies.token
         }
         const userResponse = await getUserData(params)
-
+        
         if (userResponse?.data.id && cookies.token && userResponse?.data.status !== 'Failed') {
+          setProfileName(userResponse?.data.name)
           if (path === '/') {
             router.push('/dashboard')
           }
@@ -480,66 +499,64 @@ export default function Header({ pageProps }) {
                           justifyContent: 'center'
                         }}
                       >
-                        {/* <Button
-                        id="basic-button"
-                        aria-controls="basic-menu"
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={(event) => handleAccMenu(event)}
-                        style={{
-                          minWidth: 0,
-                          padding: 'auto 0px',
-                          textTransform: 'none',
-                          fontWeight: '400'
-                        }}
-                      >
-                        <div
+                        <Button
+                          id="basic-button"
+                          aria-controls="basic-menu"
+                          aria-haspopup="true"
+                          aria-expanded={open ? 'true' : undefined}
+                          onClick={(event) => handleAccMenu(event)}
                           style={{
-                            width: '40px',
-                            height: '40px',
-                            overflow: 'hidden',
-                            borderRadius: '50%',
-                            position: 'relative',
-                            margin: 'auto 5px'
+                            minWidth: 0,
+                            padding: 'auto 0px',
+                            textTransform: 'none',
+                            fontWeight: '400'
                           }}
                         >
-                          <img
-                            src="/logo/logo-container.png"
+                          <div
                             style={{
-                              display: 'inline',
-                              margin: '0 auto',
-                              height: 'auto',
-                              width: '100%'
+                              width: '40px',
+                              height: '40px',
+                              overflow: 'hidden',
+                              borderRadius: '50%',
+                              position: 'relative',
+                              margin: 'auto 5px'
                             }}
-                            alt="Photo"
-                          />
-                        </div>
-                        <span style={{ color: '#fff' }}>
-                          {username ? username : '-'}
-                        </span>
-                        <ExpandMore style={{ color: '#fff' }} />
-                      </Button> */}
-                        {/* <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        // getContentAnchorEl={null}
-                        open={open}
-                        onClose={() => handleCloseAccMenu()}
-                        MenuListProps={{
-                          'aria-labelledby': 'basic-button'
-                        }}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'center'
-                        }}
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'center'
-                        }}
-                      >
-                        {''}
-                        <MenuItem onClick={() => { handleLogout() }}>Logout</MenuItem>
-                      </Menu> */}
+                          >
+                            <Image
+                              alt='profile'
+                              src={profileIcon}
+                              width={0}
+                              height={0}
+                              sizes="100vw"
+                              className='w-[35px] h-[30px] mt-1'
+                            />
+                          </div>
+                          <span style={{ color: '#fff' }}>
+                            {profileName ? profileName : '-'}
+                          </span>
+                          <ExpandMore style={{ color: '#fff' }} />
+                        </Button>
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          // getContentAnchorEl={null}
+                          open={open}
+                          onClose={() => handleCloseAccMenu()}
+                          MenuListProps={{
+                            'aria-labelledby': 'basic-button'
+                          }}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center'
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center'
+                          }}
+                        >
+                          {''}
+                          <MenuItem onClick={() => { handleLogout() }}>Logout</MenuItem>
+                        </Menu>
                       </div>
                     </div>
                   </Toolbar>

@@ -3,7 +3,7 @@
 import { Datatable } from "@/components/datatable"
 import { MButton, MInput, MSelect, ModalTitle, MuiInput, YMDatePicker } from "@/components/form";
 import { convDate, formatCurrency, showPopup, thousandSeparator } from "@/helpers";
-import { submitSinglePredict, deleteOfferingData, generateOffering, getVehicleList, updateOfferingData, submitBulkPredict, updateVehicles } from "@/service/marketPrediction";
+import { submitSinglePredict, getVehicleList, submitBulkPredict, updateVehicles } from "@/service/marketPrediction";
 import { closeBtn, closeButton, primaryButton, secondaryButton, successButton } from "@/styles/theme/theme.js";
 import { Add, Clear, Delete, Edit, FileDownload, Search, Send } from "@mui/icons-material";
 import { Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, Grid, IconButton, Paper, Tab, Tabs, ThemeProvider, Tooltip, Typography, createTheme } from "@mui/material";
