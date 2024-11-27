@@ -416,7 +416,7 @@ export default function Header({ pageProps }) {
   const [profileName, setProfileName] = useState('')
   const menuTitle = getMenuTitle()
   const open = Boolean(anchorEl)
-  const userToken = getCookieValueByKey('token')
+  const cookie = getCookieValueByKey('authenticated')
   useEffect(() => {
     (
       async () => {
@@ -425,11 +425,10 @@ export default function Header({ pageProps }) {
           token: cookies.token
         }
         const userResponse = await getUserData(params)
-
+        
         if (userResponse?.data.id && cookies.token && userResponse?.data.status !== 'Failed') {
           setProfileName(userResponse?.data.name)
           if (path === '/') {
-            enqueueSnackbar("Anda sudah login", { variant: 'warning' })
             router.push('/dashboard')
           }
         }
@@ -562,159 +561,154 @@ export default function Header({ pageProps }) {
                     </div>
                   </Toolbar>
                 </AppBar>
-
-                {userToken !== null || userToken !== undefined ? (
-                  <Drawer variant="permanent" open={isDrawerOpen}>
-                    <div>
-                      <Grid
-                        container
-                        alignItems="start"
-                        spacing={1}
-                        className={
-                          isDrawerOpen
-                            ? 'flex justify-between mt-[2px] pr-2'
-                            : 'flex justify-between pr-2'
-                        }
-                      >
-                        <Grid item className="">
-                          {isDrawerOpen ? (
-                            <div className="flex items-center">
-                              <img
-                                style={{
-                                  width: 'auto',
-                                  height: 40,
-                                  paddingLeft: 9,
-                                  top: 5
-                                }}
-                                className="ml-3 mt-[6px]"
-                                src="/logo/ndi-icon.png"
-                                alt="Pagii Logo"
-                                height={40}
-                              />
-                              <Typography className='ml-4 mt-1 text-[18px] font-semibold text-black'>POC PT.SIP</Typography>
-                            </div>
-                          ) : (
+                <Drawer variant="permanent" open={isDrawerOpen}>
+                  <div>
+                    <Grid
+                      container
+                      alignItems="start"
+                      spacing={1}
+                      className={
+                        isDrawerOpen
+                          ? 'flex justify-between mt-[2px] pr-2'
+                          : 'flex justify-between pr-2'
+                      }
+                    >
+                      <Grid item className="">
+                        {isDrawerOpen ? (
+                          <div className="flex items-center">
                             <img
                               style={{
-                                marginLeft: 12,
                                 width: 'auto',
                                 height: 40,
-                                position: 'relative',
-                                top: 14
+                                paddingLeft: 9,
+                                top: 5
                               }}
-                              onMouseEnter={() => toggleDrawer()}
+                              className="ml-3 mt-[6px]"
                               src="/logo/ndi-icon.png"
                               alt="Pagii Logo"
-                              width={'auto'}
                               height={40}
                             />
-                          )}
-                        </Grid>
-                        <Grid item>
-                          {isDrawerOpen ? (
-                            <IconButton
-                              // className="mt-1.5"
-                              onClick={() => toggleDrawer()}
-                            >
-                              <ChevronLeftIcon />
-                            </IconButton>
-                          ) : null}
-                        </Grid>
+                            <Typography className='ml-4 mt-1 text-[18px] font-semibold text-black'>POC PT.SIP</Typography>
+                          </div>
+                        ) : (
+                          <img
+                            style={{
+                              marginLeft: 12,
+                              width: 'auto',
+                              height: 40,
+                              position: 'relative',
+                              top: 14
+                            }}
+                            onMouseEnter={() => toggleDrawer()}
+                            src="/logo/ndi-icon.png"
+                            alt="Pagii Logo"
+                            width={'auto'}
+                            height={40}
+                          />
+                        )}
                       </Grid>
-                    </div>
-                    {userToken === null || userToken === undefined ? (<div></div>) :
-                      <List
-                        onMouseEnter={() => (!isDrawerOpen ? toggleDrawer() : null)}
-                        className={isDrawerOpen ? 'mt-[12px]' : 'mt-[24px]'}
-                      >
-                        {menus.map((value, index) => (
-                          <ListItem
-                            key={value.title}
-                            disablePadding
-                            sx={{ display: 'block' }}
-                            onClick={() => handleNavigation(value)}
-                            className={
-                              router.pathname === value.navigation
-                                ? 'no-underline bg-[#dadef1]'
-                                : router.pathname === '/lead' ||
-                                  (router.pathname === '/contact-list' &&
-                                    !isDrawerOpen &&
-                                    value.navigation === '/prospective-clients')
-                                  ? 'no-underline bg-[#dadef1]'
-                                  : 'mt-1.5'
-                            }
+                      <Grid item>
+                        {isDrawerOpen ? (
+                          <IconButton
+                            // className="mt-1.5"
+                            onClick={() => toggleDrawer()}
                           >
-                            <ListItemButton
-                              onClick={() =>
-                                value.expandable ? toggleExpand() : null
-                              }
-                              sx={{
-                                minHeight: 48,
-                                justifyContent: isDrawerOpen ? 'initial' : 'center',
-                                px: 2.5
-                              }}
-                            >
-                              <ListItemIcon
-                                sx={{
-                                  minWidth: 0,
-                                  mr: isDrawerOpen ? 3 : 'auto',
-                                  justifyContent: 'center'
-                                }}
-                              >
-                                {value.icon}
-                              </ListItemIcon>
-                              <ListItemText
-                                primary={value.title}
-                                sx={{ opacity: isDrawerOpen ? 1 : 0 }}
-                              />
-                              {value.expandable ? (
-                                isDrawerOpen ? (
-                                  isExpandable ? (
-                                    <ExpandLess />
-                                  ) : (
-                                    <ExpandMore />
-                                  )
-                                ) : null
-                              ) : null}
-                            </ListItemButton>
-                            {value.expandable ? (
-                              <Collapse
-                                className="mt-[1px] ml-[2px]"
-                                in={isExpandable}
-                                timeout="auto"
-                                unmountOnExit
-                              >
-                                <List component="div" disablePadding>
-                                  {value.children.map((data, index) => (
-                                    <ListItemButton
-                                      onClick={() => handleNavigation(data)}
-                                      className={
-                                        router.pathname === data.navigation
-                                          ? 'no-underline bg-[#dadef1] mb-1'
-                                          : 'mt-1.5 mb-1'
-                                      }
-                                      key={index}
-                                      sx={{ pl: 4 }}
-                                    >
-                                      <ListItemText
-                                        sx={{ ml: 4 }}
-                                        primary={data.title}
-                                      />
-                                    </ListItemButton>
-                                  ))}
-                                </List>
-                              </Collapse>
-                            ) : null}
-                          </ListItem>
-                        ))}
-                      </List>
-                    }
-                  </Drawer>
-                ) : (<></>)}
+                            <ChevronLeftIcon />
+                          </IconButton>
+                        ) : null}
+                      </Grid>
+                    </Grid>
+                  </div>
+                  <List
+                    onMouseEnter={() => (!isDrawerOpen ? toggleDrawer() : null)}
+                    className={isDrawerOpen ? 'mt-[12px]' : 'mt-[24px]'}
+                  >
+                    {menus.map((value, index) => (
+                      <ListItem
+                        key={value.title}
+                        disablePadding
+                        sx={{ display: 'block' }}
+                        onClick={() => handleNavigation(value)}
+                        className={
+                          router.pathname === value.navigation
+                            ? 'no-underline bg-[#dadef1]'
+                            : router.pathname === '/lead' ||
+                              (router.pathname === '/contact-list' &&
+                                !isDrawerOpen &&
+                                value.navigation === '/prospective-clients')
+                              ? 'no-underline bg-[#dadef1]'
+                              : 'mt-1.5'
+                        }
+                      >
+                        <ListItemButton
+                          onClick={() =>
+                            value.expandable ? toggleExpand() : null
+                          }
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: isDrawerOpen ? 'initial' : 'center',
+                            px: 2.5
+                          }}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: isDrawerOpen ? 3 : 'auto',
+                              justifyContent: 'center'
+                            }}
+                          >
+                            {value.icon}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={value.title}
+                            sx={{ opacity: isDrawerOpen ? 1 : 0 }}
+                          />
+                          {value.expandable ? (
+                            isDrawerOpen ? (
+                              isExpandable ? (
+                                <ExpandLess />
+                              ) : (
+                                <ExpandMore />
+                              )
+                            ) : null
+                          ) : null}
+                        </ListItemButton>
+                        {value.expandable ? (
+                          <Collapse
+                            className="mt-[1px] ml-[2px]"
+                            in={isExpandable}
+                            timeout="auto"
+                            unmountOnExit
+                          >
+                            <List component="div" disablePadding>
+                              {value.children.map((data, index) => (
+                                <ListItemButton
+                                  onClick={() => handleNavigation(data)}
+                                  className={
+                                    router.pathname === data.navigation
+                                      ? 'no-underline bg-[#dadef1] mb-1'
+                                      : 'mt-1.5 mb-1'
+                                  }
+                                  key={index}
+                                  sx={{ pl: 4 }}
+                                >
+                                  <ListItemText
+                                    sx={{ ml: 4 }}
+                                    primary={data.title}
+                                  />
+                                </ListItemButton>
+                              ))}
+                            </List>
+                          </Collapse>
+                        ) : null}
+                      </ListItem>
+                    ))}
+                  </List>
+                </Drawer>
                 <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                   <ThemeProvider theme={theme}>
                     <DrawerHeader />
-                    {userToken === null || userToken === undefined ? <></> : pageProps }
+                    {pageProps}
                   </ThemeProvider>
                 </Box>
               </Box>
@@ -723,8 +717,7 @@ export default function Header({ pageProps }) {
           </ThemeProvider>
 
         </>
-      )
-      }
-    </div >
+      )}
+    </div>
   )
 }

@@ -1,18 +1,19 @@
 'use client'
 
-import { convDate } from "@/helpers";
+import { convDate, getCookieValueByKey } from "@/helpers";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+const token = getCookieValueByKey("token");
 
 export const getVehicleList = async (params) => {
   const { page, limit, query, sortBy, order, } = params;
-  const token = localStorage.getItem('cred_m')
 
 
   const config = {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
     params: {
       ...page && { page: page },
@@ -42,6 +43,7 @@ export const getPriceComparison = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
     params: {
       ...params && { jenisMobil: params },
@@ -66,6 +68,7 @@ export const getVehicleAssetData = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
     params: {
     }
@@ -88,6 +91,7 @@ export const getVehicleTypeCountData = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
     params: {
     }
@@ -108,6 +112,7 @@ export const getVehicleOmset = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
     params: {
     }
@@ -128,6 +133,7 @@ export const getVehicleType = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
     params: {
     }
@@ -151,6 +157,7 @@ export const getVehicleSalesData = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
     params: {
     }
@@ -174,6 +181,7 @@ export const getVehicleTypeList = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
     params: {
     }
@@ -199,6 +207,7 @@ export const updateVehicles = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
   }
 
@@ -244,6 +253,7 @@ export const submitSinglePredict = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
   }
 
@@ -268,6 +278,7 @@ export const submitBulkPredict = async (params) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
     },
   }
 
