@@ -89,7 +89,7 @@ export default function Dashboard() {
           <Grid item xs={4} className="mt-4">
             <Paper variant="outlined" className="rounded-[10px]">
               <div className="flex">
-                <div className="flex justify-center items-center bg-[#2DC2BD] w-[100px] rounded-l-[10px] p-4">
+                <div className="flex justify-center items-center bg-[#5538f4] w-[100px] rounded-l-[10px] p-4">
                   <Icon className="text-white text-[48px]" component={DirectionsCarIcon} />
                 </div>
                 <div className="p-6">

@@ -5,7 +5,7 @@ import { createTheme } from "@mui/material/styles";
 export const lightTheme = createTheme({
   palette: {
     primary: {
-      main: "#2DC2BD",
+      main: "#5538f4",
     },
   },
   components: {
@@ -74,7 +74,7 @@ export const cancelButton = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#2DC2BD",
+      main: "#5538f4",
     },
   },
   components: {
@@ -101,7 +101,7 @@ export const activeButton = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#2DC2BD",
+      main: "#5538f4",
     },
   },
   components: {
@@ -109,7 +109,7 @@ export const activeButton = createTheme({
       styleOverrides: {
         root: {
           color: "white !important",
-          backgroundColor: "#2DC2BD !important",
+          backgroundColor: "#5538f4 !important",
           boxShadow: "none !important",
           "&:hover": {
             backgroundColor: "#25a19d !important",
@@ -129,7 +129,7 @@ export const inactiveButton = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#2DC2BD",
+      main: "#5538f4",
     },
   },
   components: {
@@ -158,14 +158,14 @@ export const smallEdit = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#2DC2BD",
+      main: "#5538f4",
     },
   },
   components: {
     MuiButtonBase: {
       styleOverrides: {
         root: {
-          backgroundColor: "#2DC2BD !important",
+          backgroundColor: "#5538f4 !important",
           boxShadow: "none !important",
           "&:hover": {
             boxShadow: "none !important",
@@ -188,7 +188,7 @@ export const secondaryButton = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#2DC2BD",
+      main: "#5538f4",
     },
   },
   components: {
@@ -215,7 +215,7 @@ export const primaryButton = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#2DC2BD",
+      main: "#5538f4",
     },
   },
   components: {
@@ -223,7 +223,7 @@ export const primaryButton = createTheme({
       styleOverrides: {
         root: {
           color: "white !important",
-          backgroundColor: "#2DC2BD !important",
+          backgroundColor: "#5538f4 !important",
           boxShadow: "none !important",
           "&:hover": {
             backgroundColor: "#25a19d !important",

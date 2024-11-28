@@ -656,10 +656,10 @@ export default function MarketPrediction() {
         <AccordionDetails >
           <div>
             <div color="primary" className="flex ml-[24px] mb-[24px]">
-              <div className={tabsValue === 0 ? 'bg-[#2DC2BD] rounded-[10px] p-2 text-white mr-4 cursor-pointer' : 'mr-4 cursor-pointer p-2'} onClick={() => handleChangeTabs(0)}>
+              <div className={tabsValue === 0 ? 'bg-[#5538f4] rounded-[10px] p-2 text-white mr-4 cursor-pointer' : 'mr-4 cursor-pointer p-2'} onClick={() => handleChangeTabs(0)}>
                 <Typography >Single Process</Typography>
               </div>
-              <div className={tabsValue === 1 ? 'bg-[#2DC2BD] rounded-[10px] p-2 text-white mr-4 cursor-pointer' : 'mr-4 cursor-pointer p-2'} onClick={() => handleChangeTabs(1)}>
+              <div className={tabsValue === 1 ? 'bg-[#5538f4] rounded-[10px] p-2 text-white mr-4 cursor-pointer' : 'mr-4 cursor-pointer p-2'} onClick={() => handleChangeTabs(1)}>
                 <Typography>Bulk Process</Typography>
               </div>
             </div>
@@ -974,7 +974,7 @@ export default function MarketPrediction() {
                 variant="contained"
                 // color="primary"
                 size="small"
-                className="bg-[#2DC2BD] shadow-none text-white min-w-[10px] pr-0"
+                className="bg-[#5538f4] shadow-none text-white min-w-[10px] pr-0"
                 onClick={() => toggleModalDetail('open', params)}
                 startIcon={<Search />}
               ></Button>

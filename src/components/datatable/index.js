@@ -17,7 +17,7 @@ const getMuiTheme = () =>
   createTheme({
     palette: {
       primary: {
-        main: "#2DC2BD",
+        main: "#5538f4",
       },
     },
     typography: {
@@ -150,7 +150,7 @@ const getMuiTheme = () =>
           },
           containedPrimary: {
             color: "#FFF",
-            backgroundColor: "#2DC2BD",
+            backgroundColor: "#5538f4",
             boxShadow: "none",
             "&:hover": {
               backgroundColor: "#25a19d",
@@ -310,7 +310,7 @@ export const Datatable = (props) => {
                           variant="contained"
                           size='small'
                           style={{
-                            'backgroundColor': '#2DC2BD',
+                            'backgroundColor': '#5538f4',
                             'boxShadow': 'none',
                             'color': '#fff',
                             // '&:hover': {

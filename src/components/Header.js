@@ -110,7 +110,7 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
   }),
-  backgroundColor: '#2DC2BD',
+  backgroundColor: '#5538f4',
   boxShadow: 'none',
   ...(open && {
     marginLeft: drawerWidth,
@@ -119,7 +119,7 @@ const AppBar = styled(MuiAppBar, {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen
     }),
-    backgroundColor: '#2DC2BD',
+    backgroundColor: '#5538f4',
     boxShadow: 'none'
   })
 }))
@@ -168,7 +168,7 @@ const primaryButton = createTheme({
       styleOverrides: {
         root: {
           color: 'white !important',
-          backgroundColor: '#2DC2BD !important',
+          backgroundColor: '#5538f4 !important',
           boxShadow: 'none !important',
           '&:hover': {
             backgroundColor: '#25a19d !important',
