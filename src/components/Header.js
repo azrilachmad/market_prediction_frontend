@@ -2,50 +2,35 @@
 /* eslint-disable no-unused-vars */
 "use client"
 
-import { redirect, usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 import { lightTheme } from '@/themes/theme'
 
 import {
-  Badge,
   Box,
   Button,
-  CardMedia,
-  CircularProgress,
-  ClickAwayListener,
   Collapse,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
   IconButton,
   List,
+  Grid,
   Menu,
   MenuItem,
-  Paper,
   Toolbar,
   Typography,
-  Zoom
-  , ThemeProvider, CssBaseline
+  ThemeProvider,
+  CssBaseline
 } from '@mui/material'
 import {
-  ExitToApp,
   ExpandLess,
   ExpandMore,
   Menu as MenuIcon,
-  Notifications,
-  Send,
-  StarBorder,
-  Visibility,
-  VisibilityOff
+  Dashboard,
+  Store,
+  Settings
 } from '@mui/icons-material'
 import {
   styled,
-  useTheme,
-  Theme,
-  CSSObject,
   createTheme
 } from '@mui/material/styles'
 
@@ -53,21 +38,16 @@ import Image from 'next/image'
 import MuiDrawer from '@mui/material/Drawer'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import MailIcon from '@mui/icons-material/Mail'
-import { deleteCookieValue, getCookieValueByKey, isArray, showPopup } from '../helpers'
-import Link from 'next/link'
-import { MButton, MInput, ModalTitle } from '../components/form'
+import { getCookieValueByKey, isArray, showPopup } from '../helpers'
 import { parseCookies, setCookie } from 'nookies'
 import { getUserData, logoutUser } from '@/service/auth'
 import { enqueueSnackbar } from 'notistack'
-import { parseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import profileIcon from './../assets/images/profile.png';
+import sipIcon from './../assets/images/sip-icon.png';
 
 
 const drawerWidth = 260
@@ -141,45 +121,6 @@ const Drawer = styled(MuiDrawer, {
     '& .MuiDrawer-paper': closedMixin(theme)
   })
 }))
-
-
-const cancelButton = createTheme({
-  components: {
-    MuiButtonBase: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#e0e0e0 !important',
-          boxShadow: 'none !important',
-          '&:hover': {
-            boxShadow: 'none !important',
-            backgroundColor: '#d5d5d5 !important'
-          },
-          color: '#000000 !important',
-          height: '32px !important'
-        }
-      }
-    }
-  }
-})
-
-const primaryButton = createTheme({
-  components: {
-    MuiButtonBase: {
-      styleOverrides: {
-        root: {
-          color: 'white !important',
-          backgroundColor: '#5538f4 !important',
-          boxShadow: 'none !important',
-          '&:hover': {
-            backgroundColor: '#25a19d !important',
-            boxShadow: 'none !important'
-          },
-          height: '32px !important'
-        }
-      }
-    }
-  }
-})
 
 const drawerTheme = createTheme({
   typography: {
@@ -271,25 +212,9 @@ export default function Header({ pageProps }) {
   const router = useRouter()
   const [theme] = useState(lightTheme)
 
-  const [username, setUsername] = useState()
-  const [token, setToken] = useState()
-
-  useEffect(() => {
-    if (localStorage.getItem('user')) setUsername(localStorage.getItem('user'))
-    if (localStorage.getItem('cred_m')) setToken(localStorage.getItem('token'))
-  }, [])
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
   const [isExpandable, setIsExpandable] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [modalPassword, setModalPassword] = useState(false)
-  const [showPassword1, setShowPassword1] = useState(false)
-  const [showPassword2, setShowPassword2] = useState(false)
-  const [showPassword3, setShowPassword3] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
-  const [notif, setNotif] = useState([])
-  const [notifModal, setNotifModal] = useState(false)
-  const dynamicRoute = useRouter().asPath
 
   const toggleExpand = () => {
     setIsExpandable(!isExpandable)
@@ -307,8 +232,8 @@ export default function Header({ pageProps }) {
     } else if (isDrawerOpen === false) {
       setTimeout(() => {
         if (
-          router.pathname === '/leads' ||
-          router.pathname === '/contact-list'
+          router.pathname === '/dashboard' ||
+          router.pathname === '/price-check'
         ) {
           setIsExpandable(true)
         }
@@ -331,58 +256,31 @@ export default function Header({ pageProps }) {
     {
       title: 'Dashboard',
       icon: (
-        <Image
-          alt='menu-icon'
-          src="/logo/ndi-icon.png"
-          width={0}
-          height={0}
-          sizes="100vw"
-          style={{ width: '100%', height: '24px' }} // optional
-        />
+        <Dashboard />
       ),
       navigation: '/dashboard',
       expandable: false,
       refKey: 'toggleDashboard',
       children: []
     },
-    // {
-    //   title: 'My Contact',
-    //   icon: (
-    //     <Image
-    //       alt="Prospective Client Logo"
-    //       width={22}
-    //       height={22}
-    //     />
-    //   ),
-    //   expandable: true,
-    //   navigation: '/prospective-clients',
-    //   refKey: 'toggleProspectiveClients',
-    //   children: [
-    //     {
-    //       title: 'Contact List',
-    //       navigation: '/contact-list'
-    //     },
-    //     {
-    //       title: 'Leads',
-    //       navigation: '/leads'
-    //     }
-    //   ]
-    // },
     {
-      title: 'Market Prediction',
+      title: 'Price Check',
       icon: (
-        <Image
-          alt='menu-icon'
-          src="/logo/ndi-icon.png"
-          width={0}
-          height={0}
-          sizes="100vw"
-          style={{ width: '100%', height: '24px' }} // optional
-        />
+        <Store />
       ),
       navigation: '/market-prediction',
       expandable: false,
       refKey: 'toggleMarketPrediction',
+      children: []
+    },
+    {
+      title: 'Setting',
+      icon: (
+        <Settings />
+      ),
+      navigation: '/setting',
+      expandable: false,
+      refKey: 'toggleSettting',
       children: []
     }
   ]
@@ -416,7 +314,6 @@ export default function Header({ pageProps }) {
   const [profileName, setProfileName] = useState('')
   const menuTitle = getMenuTitle()
   const open = Boolean(anchorEl)
-  const cookie = getCookieValueByKey('authenticated')
   useEffect(() => {
     (
       async () => {
@@ -425,7 +322,7 @@ export default function Header({ pageProps }) {
           token: cookies.token
         }
         const userResponse = await getUserData(params)
-        
+
         if (userResponse?.data.id && cookies.token && userResponse?.data.status !== 'Failed') {
           setProfileName(userResponse?.data.name)
           if (path === '/') {
@@ -444,14 +341,6 @@ export default function Header({ pageProps }) {
     )();
   },);
 
-  // const isAuthenticated = getCookieValueByKey('authenticated'); // Replace with your actual authentication check logic
-
-  // if (!isAuthenticated) {
-  //   return redirect('/'); // Redirects to /login without rendering
-  // }
-  // if (isAuthenticated) {
-  //   return redirect('/dashboard'); // Redirects to /login without rendering
-  // }
 
   return (
     <div>
@@ -576,22 +465,17 @@ export default function Header({ pageProps }) {
                       <Grid item className="">
                         {isDrawerOpen ? (
                           <div className="flex items-center">
-                            <img
-                              style={{
-                                width: 'auto',
-                                height: 40,
-                                paddingLeft: 9,
-                                top: 5
-                              }}
-                              className="ml-3 mt-[6px]"
-                              src="/logo/ndi-icon.png"
-                              alt="Pagii Logo"
-                              height={40}
+                            <Image
+                              alt='sip-icon'
+                              src={sipIcon}
+                              width={0}
+                              height={0}
+                              className='w-[40px] h-[40px] mt-1 ml-[12px]'
                             />
                             <Typography className='ml-4 mt-1 text-[18px] font-semibold text-black'>POC PT.SIP</Typography>
                           </div>
                         ) : (
-                          <img
+                          <Image
                             style={{
                               marginLeft: 12,
                               width: 'auto',
@@ -599,11 +483,12 @@ export default function Header({ pageProps }) {
                               position: 'relative',
                               top: 14
                             }}
+                            className='ml-[10px] w-auto h-[40px]'
                             onMouseEnter={() => toggleDrawer()}
-                            src="/logo/ndi-icon.png"
-                            alt="Pagii Logo"
-                            width={'auto'}
-                            height={40}
+                            src={sipIcon}
+                            alt="sip-icon"
+                            width={0}
+                            height={0}
                           />
                         )}
                       </Grid>
@@ -632,10 +517,10 @@ export default function Header({ pageProps }) {
                         className={
                           router.pathname === value.navigation
                             ? 'no-underline bg-[#dadef1]'
-                            : router.pathname === '/lead' ||
-                              (router.pathname === '/contact-list' &&
+                            : router.pathname === '/dashboard' ||
+                              (router.pathname === '/price-check' &&
                                 !isDrawerOpen &&
-                                value.navigation === '/prospective-clients')
+                                value.navigation === '/settings')
                               ? 'no-underline bg-[#dadef1]'
                               : 'mt-1.5'
                         }
@@ -654,7 +539,8 @@ export default function Header({ pageProps }) {
                             sx={{
                               minWidth: 0,
                               mr: isDrawerOpen ? 3 : 'auto',
-                              justifyContent: 'center'
+                              justifyContent: 'center',
+                              color: '#5538f4'
                             }}
                           >
                             {value.icon}
