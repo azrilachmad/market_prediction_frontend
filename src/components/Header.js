@@ -528,7 +528,7 @@ export default function Header({ pageProps }) {
                               width={0}
                               height={0}
                               sizes="100vw"
-                              className='w-[35px] h-[30px] mt-1'
+                              className='w-[32px] h-[32px] mt-1'
                             />
                           </div>
                           <span style={{ color: '#fff' }}>

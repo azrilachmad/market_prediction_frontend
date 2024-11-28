@@ -28,13 +28,13 @@ export default function Home() {
   const router = useRouter()
 
   const [formData, setFormData] = useState({
-    email: null,
-    password: null,
+    email: '',
+    password: '',
   })
 
   const [errorMessage, setErrorMessage] = useState({
-    email: null,
-    password: null
+    email: '',
+    password: ''
   })
 
   const handleInputChange = (event) => {
@@ -43,7 +43,7 @@ export default function Home() {
       return;
     }
     setFormData({ ...formData, [name]: value })
-    setErrorMessage({ ...errorMessage, [name]: null })
+    setErrorMessage({ ...errorMessage, [name]: '' })
   }
 
   const {
