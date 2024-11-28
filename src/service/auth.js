@@ -13,7 +13,6 @@ export const loginUser = async (params) => {
             Accept: "application/json",
             "Content-Type": "application/json",
         },
-        credentials: 'include'
     }
 
     try {
@@ -21,6 +20,7 @@ export const loginUser = async (params) => {
             `${process.env.NEXT_PUBLIC_API_URL}/api/login`, params, config
         );
         if (response) {
+            console.log(response.data)
             return response.data
         }
     } catch (error) {

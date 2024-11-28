@@ -27,6 +27,7 @@ export const UserManagement = () => {
         name: null,
         email: null,
         password: null,
+        last_activity: null,
     })
 
     const {
@@ -94,6 +95,17 @@ export const UserManagement = () => {
                             <Typography className="text-sm">{detailUserData.userType ===  '1' ? 'Superadmin' : 'User'}</Typography>
                         </Grid>
                     </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={4.5} className="mb-2">
+                            <Typography className="text-sm"><b>Last Activity</b></Typography>
+                        </Grid>
+                        <Grid item >
+                            <Typography className="text-sm">:</Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography className="text-sm">{detailUserData.last_activity ? convDate(detailUserData.last_activity, 'DD/MM/YY hh:mm:ss') : '-'}</Typography>
+                        </Grid>
+                    </Grid>
 
                 </DialogContent>
                 <DialogActions style={{
@@ -137,13 +149,14 @@ export const UserManagement = () => {
 
     const toggleModalDetail = (type, params) => {
         if (type === 'open') {
-            // console.log(params)
+            console.log(params)
             setDetailUserData({
                 id: params[1],
                 userType: params[2],
                 name: params[3],
                 email: params[4],
                 password: params[6],
+                last_activity: params[7],
             })
             setModalDetail(true)
         } else if (type === 'close') {
@@ -153,6 +166,7 @@ export const UserManagement = () => {
                 name: null,
                 email: null,
                 password: null,
+                last_activity: null,
 
             })
             setModalDetail(false)
@@ -209,6 +223,12 @@ export const UserManagement = () => {
             label: "Password",
             display: false,
             customBodyRender: (value) => (value ? value : "-"),
+        },
+        {
+            name: "updatedAt",
+            label: "Last Activity",
+            display: true,
+            customBodyRender: (value) => (value ? convDate(value, 'DD/MM/YY hh:mm:ss') : "-"),
         },
 
     ];

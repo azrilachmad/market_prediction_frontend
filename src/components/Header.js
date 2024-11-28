@@ -304,6 +304,7 @@ export default function Header({ pageProps }) {
       async () => {
         const response = await logoutUser()
         if (response.message === 'Successfully logged out') {
+          setAnchorEl(null)
           router.push('/')
         }
       }
