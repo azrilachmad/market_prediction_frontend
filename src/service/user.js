@@ -36,3 +36,36 @@ export const getUserList = async (params) => {
     }
 
 };
+
+export const createUser = async (params) => {
+    const { userType, name, email, password, confirmPassword, } = params;
+
+
+    const config = {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+    }
+    const data = {
+        ...(userType && { userType }),
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(password && { password }),
+        ...(confirmPassword && { confirmPassword }),
+    };
+
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/user/create`,
+            data, // Pass the `data` object directly
+            config
+        );
+        if (response) {
+            return response.data
+        }
+    } catch (error) {
+        return error.response.data
+    }
+
+};

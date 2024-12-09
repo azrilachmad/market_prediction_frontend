@@ -3,7 +3,7 @@
 "use client"
 
 import { usePathname, useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 
 import { lightTheme } from '@/themes/theme'
 
@@ -48,6 +48,7 @@ import { getUserData, logoutUser } from '@/service/auth'
 import { enqueueSnackbar } from 'notistack'
 import profileIcon from './../assets/images/profile.png';
 import sipIcon from './../assets/images/sip-icon.png';
+import { DataContext } from '@/helpers/dataContext'
 
 
 const drawerWidth = 260
@@ -313,34 +314,39 @@ export default function Header({ pageProps }) {
 
 
   const [profileName, setProfileName] = useState('')
+  const [userProfile, setUserProfile] = useState('')
   const menuTitle = getMenuTitle()
   const open = Boolean(anchorEl)
+  const [isDataFetched, setIsDataFetched] = useState(false);
+
   useEffect(() => {
-    (
-      async () => {
-        const cookies = parseCookies('token')
-        const params = {
-          token: cookies.token
-        }
-        const userResponse = await getUserData(params)
+    const fetchUserData = async () => {
+      if (isDataFetched) return;  // Prevent the API call if data is already fetched
 
-        if (userResponse?.data.id && cookies.token && userResponse?.data.status !== 'Failed') {
-          setProfileName(userResponse?.data.name)
-          if (path === '/') {
-            router.push('/dashboard')
-          }
-        }
+      const cookies = parseCookies('token');
+      const params = { token: cookies.token };
+      const userResponse = await getUserData(params);
 
-        if (userResponse?.data.status === 'Failed') {
-          if (path !== '/') {
-            enqueueSnackbar("Silakan login terlebih dahulu", { variant: 'error' })
-            router.push('/')
-          }
-          setCookie(null, 'authenticated', false)
+      if (userResponse?.data.id && cookies.token && userResponse?.data.status !== 'Failed') {
+        setProfileName(userResponse?.data.name);
+        setUserProfile(userResponse?.data);
+        setIsDataFetched(true); // Set flag after successful fetch
+        if (path === '/') {
+          router.push('/dashboard');
         }
       }
-    )();
-  },);
+
+      if (userResponse?.data.status === 'Failed') {
+        if (path !== '/') {
+          enqueueSnackbar("Silakan login terlebih dahulu", { variant: 'error' });
+          router.push('/');
+        }
+        setCookie(null, 'authenticated', false);
+      }
+    };
+
+    fetchUserData();
+  }, [isDataFetched, path, router]);
 
 
   return (
@@ -595,7 +601,9 @@ export default function Header({ pageProps }) {
                 <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                   <ThemeProvider theme={theme}>
                     <DrawerHeader />
-                    {pageProps}
+                    <DataContext.Provider value={{ userProfile }}>
+                      {pageProps}
+                    </DataContext.Provider>
                   </ThemeProvider>
                 </Box>
               </Box>

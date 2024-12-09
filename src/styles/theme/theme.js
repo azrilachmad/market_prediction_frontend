@@ -250,10 +250,10 @@ export const closeBtn = createTheme({
       styleOverrides: {
         root: {
           color: "white !important",
-          backgroundColor: "#829191 !important",
+          backgroundColor: "#575757 !important",
           boxShadow: "none !important",
           "&:hover": {
-            backgroundColor: "#687676 !important",
+            backgroundColor: "#474747 !important",
             boxShadow: "none !important",
           },
           height: "40px !important",
