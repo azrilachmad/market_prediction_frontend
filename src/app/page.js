@@ -62,94 +62,95 @@ export default function Home() {
       password: password,
     }
 
-    const response = await loginUser(params)
-
-    if (response.data?.status === 'Failed') {
-
-      if (response.data.message === "Please provide email and password") {
-        setErrorMessage({
-          email: 'error',
-          password: 'error'
-        })
+    try {
+      const response = await loginUser(params);
+      console.log(response)
+      if (response.data.status === 'Failed') {
+        if (response.data.message === "Please provide email and password") {
+          setErrorMessage({
+            email: 'error',
+            password: 'error'
+          });
+        }
+        enqueueSnackbar(response.data.message, { variant: 'error' });
+      } else if (response.data.status === 'Success') {
+        enqueueSnackbar('Logged In', { variant: 'success' });
+        setCookie(null, 'token', response.data.token, { path: '/' });
+        setCookie(null, 'authenticated', true, { path: '/' });
+        router.push('/dashboard');
       }
-      enqueueSnackbar(response.data.message, { variant: 'error' })
-    } else if (response.data?.status === 'Success') {
-      enqueueSnackbar('Logged In', { variant: 'success' })
-      setCookie(null, 'token', response.data.token)
-      setCookie(null, 'authenticated', true)
-      router.push('/dashboard')
+    } catch (error) {
+      enqueueSnackbar('Login failed', { variant: 'error' });
     }
-
-
   }
 
- 
+
   // Fixes: Hydration failed because the initial UI does not match what was rendered on the server
 
   const loginView = () => {
     return (
       <div>
         <Container xs={12}>
-            <>
-              <div className='flex justify-center items-center text-center mt-32'>
-                <div>
-                  <Image
-                    alt='logo-sip'
-                    src={logoSIP}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    className='w-[250px] h-[100px]'
-                  />
-                  <Typography className='text-[32px] font-bold mt-4 mb-8'>Price Check Application</Typography>
-                </div>
+          <>
+            <div className='flex justify-center items-center text-center mt-32'>
+              <div>
+                <Image
+                  alt='logo-sip'
+                  src={logoSIP}
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  className='w-[250px] h-[100px]'
+                />
+                <Typography className='text-[32px] font-bold mt-4 mb-8'>Price Check Application</Typography>
               </div>
-              <div className='flex justify-center'>
-                <Card variant='outlined' className='px-8 py-8 rounded-[8px] w-[600px]'>
-                  <Typography className='text-[18px] font-semibold flex justify-center '>Please Login</Typography>
+            </div>
+            <div className='flex justify-center'>
+              <Card variant='outlined' className='px-8 py-8 rounded-[8px] w-[600px]'>
+                <Typography className='text-[18px] font-semibold flex justify-center '>Please Login</Typography>
 
-                  <form onSubmit={(e) => handleSubmit(e)}>
+                <form onSubmit={(e) => handleSubmit(e)}>
 
-                    <div className='mt-2'>
-                      <Typography className="mb-2 font-semibold">Email:</Typography>
-                      <MInput
-                        fullwidth
-                        variant="outlined"
-                        name="email"
-                        placeholder="Input Email"
-                        value={email}
-                        onChange={(event) => handleInputChange(event)}
-                        type="email"
-                        error={errorMessage && errorMessage.email ? true : false}
-                      />
-                    </div>
-                    <div className='mt-4'>
-                      <Typography className="mb-2 font-semibold">Password:</Typography>
-                      <MInput
-                        fullwidth
-                        variant="outlined"
-                        name="password"
-                        placeholder="Input Password"
-                        value={password}
-                        onChange={(event) => handleInputChange(event)}
-                        type="password"
-                        error={errorMessage && errorMessage.password ? true : false} />
-                    </div>
-                    <div className='mt-6 flex justify-end '>
-                      <MButton
-                        type="submit"
-                        label={"Login"}
-                        // loading={isLoadingSubmit}
-                        onClick={(e) => {
-                          handleSubmitLogin(e)
-                        }}
-                        className='w-[100px]'
-                      />
-                    </div>
-                  </form>
-                </Card>
-              </div>
-            </>
+                  <div className='mt-2'>
+                    <Typography className="mb-2 font-semibold">Email:</Typography>
+                    <MInput
+                      fullwidth
+                      variant="outlined"
+                      name="email"
+                      placeholder="Input Email"
+                      value={email}
+                      onChange={(event) => handleInputChange(event)}
+                      type="email"
+                      error={errorMessage && errorMessage.email ? true : false}
+                    />
+                  </div>
+                  <div className='mt-4'>
+                    <Typography className="mb-2 font-semibold">Password:</Typography>
+                    <MInput
+                      fullwidth
+                      variant="outlined"
+                      name="password"
+                      placeholder="Input Password"
+                      value={password}
+                      onChange={(event) => handleInputChange(event)}
+                      type="password"
+                      error={errorMessage && errorMessage.password ? true : false} />
+                  </div>
+                  <div className='mt-6 flex justify-end '>
+                    <MButton
+                      type="submit"
+                      label={"Login"}
+                      // loading={isLoadingSubmit}
+                      onClick={(e) => {
+                        handleSubmitLogin(e)
+                      }}
+                      className='w-[100px]'
+                    />
+                  </div>
+                </form>
+              </Card>
+            </div>
+          </>
         </Container>
       </div>
     )

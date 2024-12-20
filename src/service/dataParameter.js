@@ -5,7 +5,7 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 const token = getCookieValueByKey("token");
 
-export const getUserList = async (params) => {
+export const getDataParameterList = async (params) => {
     const { page, limit, query, sortBy, order, } = params;
 
 
@@ -26,7 +26,7 @@ export const getUserList = async (params) => {
 
     try {
         const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/userlist`, config
+            `${process.env.NEXT_PUBLIC_API_URL}/api/data-parameter`, config
         );
         if (response) {
             return response.data
@@ -37,8 +37,8 @@ export const getUserList = async (params) => {
 
 };
 
-export const createUser = async (params) => {
-    const { userType, name, email, password, confirmPassword, } = params;
+export const createDataParameter = async (params) => {
+    const { parameter, table_column, status } = params;
 
 
     const config = {
@@ -49,16 +49,15 @@ export const createUser = async (params) => {
         },
     }
     const data = {
-        ...(userType && { userType }),
-        ...(name && { name }),
-        ...(email && { email }),
-        ...(password && { password }),
-        ...(confirmPassword && { confirmPassword }),
+        ...(parameter && { parameter }),
+        ...(table_column && { table_column }),
+        status: status
     };
+
 
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/user/create`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/data-parameter/create`,
             data, // Pass the `data` object directly
             config
         );
@@ -71,8 +70,8 @@ export const createUser = async (params) => {
 
 };
 
-export const editUser = async (params) => {
-    const { userType, name, email, password, confirmPassword, } = params;
+export const editDataParameter = async (params) => {
+    const {id, parameter, table_column, status } = params;
 
 
     const config = {
@@ -83,16 +82,15 @@ export const editUser = async (params) => {
         },
     }
     const data = {
-        ...(userType && { userType }),
-        ...(name && { name }),
-        ...(email && { email }),
-        ...(password && { password }),
-        ...(confirmPassword && { confirmPassword }),
+        ...(parameter && { parameter }),
+        ...(table_column && { table_column }),
+        status: status
     };
+
 
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/user/edit/`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/data-parameter/edit/${id}`,
             data, // Pass the `data` object directly
             config
         );
@@ -102,10 +100,9 @@ export const editUser = async (params) => {
     } catch (error) {
         return error.response.data
     }
-
 };
 
-export const deleteUser = async (id) => {
+export const deleteDataParameter = async (id) => {
 
     const config = {
         headers: {
@@ -115,11 +112,11 @@ export const deleteUser = async (id) => {
         },
     }
 
-    const data={}
+    const data = {}
 
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/user/delete/${id}`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/data-parameter/delete/${id}`,
             data, // Pass the `data` object directly
             config
         );

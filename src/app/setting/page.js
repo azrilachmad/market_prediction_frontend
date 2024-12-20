@@ -10,6 +10,7 @@ import { useContext, useState } from "react";
 import { jobScheduleTab } from './tabList/jobSchedule'
 import { UserManagement } from "./tabList/userManagement";
 import { DataContext } from "@/helpers/dataContext";
+import { DataParameter } from "./tabList/dataParameter";
 export default function Setting() {
 
   const userProfile = useContext(DataContext);
@@ -73,7 +74,7 @@ export default function Setting() {
           {<jobScheduleTab />}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          Data Parameter
+          {<DataParameter />}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
           Data Source
