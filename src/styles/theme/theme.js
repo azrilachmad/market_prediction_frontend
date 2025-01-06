@@ -129,7 +129,7 @@ export const inactiveButton = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#5538f4",
+      main: "#656464",
     },
   },
   components: {
@@ -139,7 +139,7 @@ export const inactiveButton = createTheme({
           boxShadow: "none !important",
           "&:hover": {
             boxShadow: "none !important",
-            backgroundColor: "#25a19d !important",
+            backgroundColor: "#656464 !important",
             color: "#FFFFFF !important"
           },
           color: "#656464 !important",
@@ -169,7 +169,7 @@ export const smallEdit = createTheme({
           boxShadow: "none !important",
           "&:hover": {
             boxShadow: "none !important",
-            backgroundColor: "#25a19d !important",
+            backgroundColor: "#2b0cd8 !important",
           },
           color: "#FFFFFF !important",
           height: "32px !important",
@@ -188,7 +188,7 @@ export const secondaryButton = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#5538f4",
+      main: "#E5AF5A",
     },
   },
   components: {
@@ -226,7 +226,7 @@ export const primaryButton = createTheme({
           backgroundColor: "#5538f4 !important",
           boxShadow: "none !important",
           "&:hover": {
-            backgroundColor: "#25a19d !important",
+            backgroundColor: "#2b0cd8 !important",
             boxShadow: "none !important",
           },
           height: "40px !important",
