@@ -62,7 +62,7 @@ export const DataParameter = () => {
         refetch: mutateDataParameter,
     } = useQuery({
         queryKey: [
-            "user-data",
+            "data-parameter",
             {
                 ...dataParameterQuery.page && { page: dataParameterQuery.page },
                 ...dataParameterQuery.limit && { limit: dataParameterQuery.limit },

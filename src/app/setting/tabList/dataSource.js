@@ -62,7 +62,7 @@ export const DataSource = () => {
         refetch: mutateDataSource,
     } = useQuery({
         queryKey: [
-            "user-data",
+            "user-source",
             {
                 ...dataSourceQuery.page && { page: dataSourceQuery.page },
                 ...dataSourceQuery.limit && { limit: dataSourceQuery.limit },
