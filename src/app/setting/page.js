@@ -7,11 +7,11 @@ import { getVehicleAssetData } from "@/service/marketPrediction";
 import { useQuery } from "react-query";
 import { useContext, useState } from "react";
 
-import { jobScheduleTab } from './tabList/jobSchedule'
 import { UserManagement } from "./tabList/userManagement";
 import { DataContext } from "@/helpers/dataContext";
 import { DataParameter } from "./tabList/dataParameter";
 import { DataSource } from "./tabList/dataSource";
+import { JobSchedule } from "./tabList/jobSchedule";
 export default function Setting() {
 
   const userProfile = useContext(DataContext);
@@ -72,13 +72,13 @@ export default function Setting() {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          {<jobScheduleTab />}
+          {<JobSchedule />}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           {<DataParameter />}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-        {<DataSource />}
+          {<DataSource />}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={3}>
           {<UserManagement />}
