@@ -288,7 +288,7 @@ export default function Dashboard() {
                       label: 'Duration (s)',
                       data: totalDuration ? totalDuration : [],
                       valueFormatter: (value) => `${value} Seconds`,
-                      color: 'blue',
+                      color: 'orange',
 
                     },
                   ]}
