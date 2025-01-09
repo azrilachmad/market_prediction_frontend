@@ -13,6 +13,8 @@ import { getVehicleAssetData, getVehicleOmset, getVehicleSalesData, getVehicleTy
 import { useQuery } from "react-query";
 import { dateTimePickerTabsClasses } from "@mui/x-date-pickers";
 import { removeDuplicateData, transformDataseries, transformDataset } from "@/helpers";
+import { getCard1Data } from "@/service/dashboard";
+import { PendingActions } from "@mui/icons-material";
 export default function Dashboard() {
 
   const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -22,20 +24,20 @@ export default function Dashboard() {
   }
 
   const {
-    data: vehicleAssetData,
-    isLoading: isLoadingVehicleAssetData,
+    data: card1Data,
+    isLoading: isLoadingCard1Data,
   } = useQuery({
     queryKey: [
       "vehicle-asset",
       {
       },
     ],
-    queryFn: ({ queryKey }) => getVehicleAssetData(queryKey[1]),
+    queryFn: ({ queryKey }) => getCard1Data(queryKey[1]),
   });
 
   const {
-    data: vehicleTypeCountData,
-    isLoading: isLoadingVehicleTypeCountData,
+    data: card2Data,
+    isLoading: isLoadingCard2Data,
   } = useQuery({
     queryKey: [
       "vehicle-type-count",
@@ -46,8 +48,8 @@ export default function Dashboard() {
   });
 
   const {
-    data: vehicleOmsetData,
-    isLoading: isLoadingVehicleOmsetData,
+    data: card3Data,
+    isLoading: isLoadingCard3Data,
   } = useQuery({
     queryKey: [
       "omset",
@@ -93,8 +95,8 @@ export default function Dashboard() {
                   <Icon className="text-white text-[48px]" component={DirectionsCarIcon} />
                 </div>
                 <div className="p-6">
-                  <Typography className="text-[20px]"><b>{thousandSeparator(vehicleAssetData?.data ? vehicleAssetData?.data : 0)} Unit</b></Typography>
-                  <Typography className="text-[14px]">Jumlah Asset</Typography>
+                  <Typography className="text-[20px]"><b>{thousandSeparator(card1Data?.data ? card1Data?.data : 0)} Unit</b></Typography>
+                  <Typography className="text-[14px]">Total Data</Typography>
                 </div>
               </div>
             </Paper>
@@ -103,11 +105,11 @@ export default function Dashboard() {
             <Paper variant="outlined" className="rounded-[10px]">
               <div className="flex">
                 <div className="flex justify-center items-center bg-[#E5AF5A] w-[100px] rounded-l-[10px] p-4">
-                  <Icon className="text-white text-[48px]" component={BarChartIcon} />
+                  <Icon className="text-white text-[48px]" component={PendingActions} />
                 </div>
                 <div className="p-6">
-                  <Typography className="text-[20px]"><b>{vehicleTypeCountData?.data ? `${thousandSeparator(vehicleTypeCountData?.data)} Jenis` : '0'}</b></Typography>
-                  <Typography className="text-[14px]">Jumlah Jenis Mobil</Typography>
+                  <Typography className="text-[20px]"><b>{card2Data?.data ? `${thousandSeparator(card2Data?.data)} Jenis` : '0'}</b></Typography>
+                  <Typography className="text-[14px]">To be processed</Typography>
                 </div>
               </div>
             </Paper>
@@ -119,8 +121,8 @@ export default function Dashboard() {
                   <Icon className="text-white text-[48px]" component={SubdirectoryArrowRightIcon} />
                 </div>
                 <div className="p-6">
-                  <Typography className="text-[20px]"><b>{vehicleOmsetData?.data ? `Rp${thousandSeparator(vehicleOmsetData?.data)}` : '0'}</b></Typography>
-                  <Typography className="text-[14px]">Total Omset</Typography>
+                  <Typography className="text-[20px]"><b>{card3Data?.data ? `Rp${thousandSeparator(card3Data?.data)}` : '0'}</b></Typography>
+                  <Typography className="text-[14px]">Processed Data</Typography>
                 </div>
               </div>
             </Paper>
