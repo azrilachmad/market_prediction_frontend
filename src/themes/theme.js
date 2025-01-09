@@ -185,12 +185,6 @@ export const smallEdit = createTheme({
 });
 
 export const secondaryButton = createTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#E5AF5A",
-    },
-  },
   components: {
     MuiButtonBase: {
       styleOverrides: {
