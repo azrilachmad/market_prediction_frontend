@@ -77,3 +77,32 @@ export const getCard3Data = async (params) => {
   }
 
 };
+
+export const getScheduleLog = async (params) => {
+  const { startDate, endDate } = params;
+
+
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
+    },
+    params: {
+      ...startDate && { startDate: startDate },
+      ...endDate && { endDate: endDate },
+    }
+  }
+
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/schedule-log`, config
+    );
+    if (response) {
+      return response.data
+    }
+  } catch (error) {
+
+  }
+
+};
