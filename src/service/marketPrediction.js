@@ -194,7 +194,7 @@ export const submitSinglePredict = async (params) => {
 
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicles`, data, config
+      `${process.env.NEXT_PUBLIC_API_URL}/api/vehicle/predict`, data, config
     );
     if (response) {
       return response.data
