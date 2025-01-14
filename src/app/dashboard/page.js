@@ -21,8 +21,8 @@ import dayjs from "dayjs";
 import { primaryButton, secondaryButton } from "@/themes/theme";
 import { closeBtn } from "@/styles/theme/theme";
 export default function Dashboard() {
-  const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
+  const addCommas = (num) => num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const removeNonNumeric = (num) => num?.toString().replace(/[^0-9]/g, "");
   const thousandSeparator = (number) => {
     return addCommas(removeNonNumeric(number))
   }
