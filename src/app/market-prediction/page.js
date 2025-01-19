@@ -980,10 +980,10 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "checked",
+      name: "hit_count",
       label: "Checked",
       display: true,
-      customBodyRender: (value) => (value === true ? <Typography className="text-green-700 font-semibold">Yes</Typography> : <Typography className="text-red-700 font-semibold">No</Typography>),
+      customBodyRender: (value) => (value > 0 || value !== null true ? <Typography className="text-green-700 font-semibold">Yes</Typography> : <Typography className="text-red-700 font-semibold">No</Typography>),
     },
 
   ];
