@@ -983,7 +983,7 @@ export default function MarketPrediction() {
       name: "hit_count",
       label: "Checked",
       display: true,
-      customBodyRender: (value) => (value > 0 || value !== null ? <Typography className="text-green-700 font-semibold">Yes</Typography> : <Typography className="text-red-700 font-semibold">No</Typography>),
+      customBodyRender: (value) => (value > 0 ? <Typography className="text-green-700 font-semibold">Yes</Typography> : <Typography className="text-red-700 font-semibold">No</Typography>),
     },
 
   ];
