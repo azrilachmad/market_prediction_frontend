@@ -5,8 +5,13 @@ import { MButton, MInput, MSelect, ModalTitle, MuiInput, YMDatePicker } from "@/
 import { convDate, formatCurrency, showPopup, thousandSeparator } from "@/helpers";
 import { submitSinglePredict, getVehicleList, updateVehicles } from "@/service/marketPrediction";
 import { closeBtn, closeButton, primaryButton, secondaryButton, successButton } from "@/styles/theme/theme.js";
-import { Add, Clear, Delete, Edit, FileDownload, Search, Send } from "@mui/icons-material";
-import { Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, Grid, IconButton, Paper, Tab, Tabs, ThemeProvider, Tooltip, Typography, createTheme } from "@mui/material";
+import { Add, Clear, Delete, Edit, FileDownload, Restore, Search, Send } from "@mui/icons-material";
+import { Box, Button, Checkbox, CircularProgress, Grid, IconButton, Paper, Tab, Tabs, ThemeProvider, Tooltip, Typography, createTheme } from "@mui/material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { enqueueSnackbar } from "notistack";
@@ -38,27 +43,38 @@ export default function MarketPrediction() {
 
   const [detailVehicleData, setDetailVehicleData] = useState({
     id: null,
-    tanggal_jual: null,
-    lokasi: null,
-    desciption: null,
-    jenismobil: null,
-    transmisi: null,
-    umurmobil: null,
-    color: null,
+    agreement_no: null,
+    asset_desc: null,
+    ai_nama_mobil: null,
+    tahun: null,
     nopol: null,
-    pajak: null,
-    stnk: null,
-    grade_all: null,
-    gradeinterior: null,
-    gradebody: null,
-    grademesin: null,
-    km: null,
-    bottom_price: null,
-    status: null,
-    harga_terbentuk: null,
-    nama_mobil: null,
-    harga_atas: null,
-    harga_bawah: null,
+    umur: null,
+    noka: null,
+    nosin: null,
+    warna: null,
+    lokasi_unit: null,
+    kota: null,
+    provinsi: null,
+    receive_date: null,
+    inspection_date: null,
+    approval_date: null,
+    qc_date: null,
+    grade_interior: null,
+    grade_body: null,
+    grade_mesin: null,
+    overall_grade: null,
+    masa_berlaku_pajak: null,
+    masa_berlaku_stnk: null,
+    final_status: null,
+    vehicle_brand: null,
+    vehicle_transmission: null,
+    vehicle_cc: null,
+    vehicle_type: null,
+    vehicle_model: null,
+    harga_history: null,
+    ai_harga_atas: null,
+    ai_harga_bawah: null,
+    hit_count: null,
   })
 
   const [isPredictedData, setIsPredictedData] = useState(false)
@@ -93,6 +109,7 @@ export default function MarketPrediction() {
     sortBy: null,
   })
   const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState('')
 
   const {
     data: vehicleData,
@@ -112,19 +129,6 @@ export default function MarketPrediction() {
     queryFn: ({ queryKey }) => getVehicleList(queryKey[1]),
   });
 
-  const toggleModalDeleteOffering = (id) => {
-    showPopup(
-      'confirm',
-      'Are you sure you want to delete this member?',
-      'Yes',
-      () => {
-        deleteOfferingData(id),
-          mutateVehicleData();
-      }
-    );
-  }
-
-
 
   const toggleModalDetail = (type, params) => {
     // return console.log(params)
@@ -133,68 +137,139 @@ export default function MarketPrediction() {
       setIsPredictedData(false)
       setDetailVehicleData({
         id: params[1],
-        tanggal_jual: params[2],
-        lokasi: params[3],
-        desciption: params[4],
-        jenismobil: params[5],
-        transmisi: params[6],
-        year: params[7],
-        umurmobil: params[23],
-        color: params[8],
-        nopol: params[9],
-        pajak: params[10],
-        stnk: params[11],
-        grade_all: params[12],
-        gradeinterior: params[13],
-        gradebody: params[14],
-        grademesin: params[15],
-        km: params[16],
-        bottom_price: params[17],
-        status: params[18],
-        harga_terbentuk: params[19],
-        nama_mobil: params[20],
-        harga_atas: params[22],
-        harga_bawah: params[21],
+        agreement_no: params[2] * 1,
+        asset_desc: params[3],
+        ai_nama_mobil: params[4],
+        vehicle_transmission: params[5],
+        tahun: params[6],
+        nopol: params[7],
+        umur: params[8],
+        noka: params[9],
+        nosin: params[10],
+        warna: params[11],
+        lokasi_unit: params[12],
+        kota: params[13],
+        provinsi: params[14],
+        receive_date: params[15],
+        inspection_date: params[16],
+        approval_date: params[17],
+        qc_date: params[18],
+        grade_interior: params[19],
+        grade_body: params[20],
+        grade_mesin: params[21],
+        overall_grade: params[22],
+        masa_berlaku_pajak: params[23],
+        masa_berlaku_stnk: params[24],
+        final_status: params[25],
+        vehicle_brand: params[26],
+        vehicle_cc: params[27],
+        vehicle_type: params[28],
+        vehicle_model: params[29],
+        harga_history: params[30],
+        ai_harga_atas: params[31],
+        ai_harga_bawah: params[32],
+        hit_count: params[33],
       })
       setModalDetail(true)
     } else if (type === 'close') {
       setDetailVehicleData({
         id: null,
-        tanggal_jual: null,
-        lokasi: null,
-        desciption: null,
-        jenismobil: null,
-        transmisi: null,
-        umurmobil: null,
-        color: null,
+        agreement_no: null,
+        asset_desc: null,
+        ai_nama_mobil: null,
+        tahun: null,
         nopol: null,
-        pajak: null,
-        stnk: null,
-        grade_all: null,
-        gradeinterior: null,
-        gradebody: null,
-        grademesin: null,
-        km: null,
-        bottom_price: null,
-        status: null,
-        harga_terbentuk: null,
-        nama_mobil: null,
-        harga_atas: null,
-        harga_bawah: null,
+        umur: null,
+        noka: null,
+        nosin: null,
+        warna: null,
+        lokasi_unit: null,
+        kota: null,
+        provinsi: null,
+        receive_date: null,
+        inspection_date: null,
+        approval_date: null,
+        qc_date: null,
+        grade_interior: null,
+        grade_body: null,
+        grade_mesin: null,
+        overall_grade: null,
+        masa_berlaku_pajak: null,
+        masa_berlaku_stnk: null,
+        final_status: null,
+        vehicle_brand: null,
+        vehicle_transmission: null,
+        vehicle_cc: null,
+        vehicle_type: null,
+        vehicle_model: null,
+        harga_history: null,
+        ai_harga_atas: null,
+        ai_harga_bawah: null,
+        hit_count: null,
       })
       setModalDetail(false)
     }
   }
 
+  const renderModalSearch = () => {
+    return (
+      <>
+
+        <Paper variant="outlined" className="p-4 w-[600px] mb-6">
+          <Typography className="font-semibold text-[20px] text-[#656464] mb-2">Filter</Typography>
+          <div className="flex items-center">
+            <MInput
+              className='w-[350px]'
+              variant="outlined"
+              name="filter"
+              label={'Search'}
+              placeholder="Input Search"
+              value={filter}
+              onChange={(event) => handleFilterChange(event)}
+            // errorMessage={errorMessage && errorMessage?.quotation_number ? errorMessage?.quotation_number[0] : false}
+            />
+            <ThemeProvider theme={primaryButton}>
+              <MButton
+                className='h-[40px] ml-4'
+                label={'Apply'}
+                onClick={(e) => {
+                  setQuery(filter)
+                }}
+              />
+            </ThemeProvider>
+            <ThemeProvider theme={secondaryButton}>
+              <MButton
+                className='h-[40px] ml-4'
+                label={'Reset'}
+                onClick={(e) => {
+                  setQuery('')
+                  setFilter('')
+                  setVehicleQuery({
+                    page: 1,
+                    limit: 10,
+                    order: 'desc',
+                    sortBy: null,
+                  })
+                  mutateVehicleData()
+                }}
+              />
+            </ThemeProvider>
+          </div>
+        </Paper>
+      </>
+    )
+  }
+
   const renderModalDetail = () => {
-
-
-
     return (
       <Dialog
-        scroll="paper"
-        fullWidth
-        className="xl"
+        fullWidth={true}
+        PaperProps={{
+          sx: {
+            width: "100%",
+            maxWidth: "1100px!important",
+          },
+        }}
         open={modalDetail}
         onClose={() => toggleModalForm('close')}
       >
@@ -202,82 +277,82 @@ export default function MarketPrediction() {
           title={"Detail Kendaraan"}
           onClose={() => toggleModalDetail('close')}
         />
-        <DialogContent style={{ paddingTop: '0 !important' }}>
+        <DialogContent>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Tanggal Jual</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Agreement No.</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.tanggal_jual ? convDate(detailVehicleData.tanggal_jual, 'DD-MM-YYYY') : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.agreement_no ? detailVehicleData.agreement_no : '-'}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Lokasi</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Nama Kendaraan</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item>
-                <Typography className="text-sm">{detailVehicleData.lokasi ? detailVehicleData.lokasi : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.ai_nama_mobil ? detailVehicleData.ai_nama_mobil : '-'}</Typography>
               </Grid>
             </Grid>
           </div>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Description</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Tahun</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.desciption ? detailVehicleData.desciption : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.tahun ? detailVehicleData.tahun : '-'}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Jenis Mobil</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Nopol</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item>
-                <Typography className="text-sm">{detailVehicleData.jenismobil ? detailVehicleData.jenismobil : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.nopol ? detailVehicleData.nopol : '-'}</Typography>
               </Grid>
             </Grid>
           </div>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Transmisi</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Umur Kendaraan</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.transmisi ? detailVehicleData.transmisi : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.umur ? `${detailVehicleData.umur} Tahun` : '-'}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Year</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Nomor Rangka</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item>
-                <Typography className="text-sm">{detailVehicleData.year ? detailVehicleData.year : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.noka ? detailVehicleData.noka : '-'}</Typography>
               </Grid>
             </Grid>
           </div>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
+              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Umur Mobil</b></Typography>
               </Grid>
               <Grid item >
@@ -288,7 +363,7 @@ export default function MarketPrediction() {
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
+              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Color</b></Typography>
               </Grid>
               <Grid item >
@@ -301,7 +376,7 @@ export default function MarketPrediction() {
           </div>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
+              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Nopol</b></Typography>
               </Grid>
               <Grid item >
@@ -312,7 +387,7 @@ export default function MarketPrediction() {
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
+              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Pajak</b></Typography>
               </Grid>
               <Grid item >
@@ -325,124 +400,293 @@ export default function MarketPrediction() {
           </div>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>STNK</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Nomor Mesin</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.stnk ? convDate(detailVehicleData.stnk, 'DD-MM-YYYY') : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.nosin ? detailVehicleData.nosin : '-'}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Grade All</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Warna</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item>
-                <Typography className="text-sm">{detailVehicleData.grade_all ? detailVehicleData.grade_all : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.warna ? detailVehicleData.warna : '-'}</Typography>
               </Grid>
             </Grid>
           </div>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Lokasi Unit</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.lokasi_unit ? detailVehicleData.lokasi_unit : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Kota</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.kota ? detailVehicleData.kota : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Provinsi</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.provinsi ? detailVehicleData.provinsi : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Receive Date</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.receive_date ? convDate(detailVehicleData.receive_date, 'YYYY/MM/DD') : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Inspection Date</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.inspection_date ? convDate(detailVehicleData.inspection_date, 'YYYY/MM/DD') : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Approval Date</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.approval_date ? convDate(detailVehicleData.approval_date, 'YYYY/MM/DD') : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>QC Date</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.qc_date ? convDate(detailVehicleData.qc_date, 'YYYY/MM/DD') : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Grade Interior</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
-              <Grid item >
-                <Typography className="text-sm">{detailVehicleData.gradeinterior ? detailVehicleData.gradeinterior : '-'}</Typography>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.grade_interior ? detailVehicleData.grade_interior : '-'}</Typography>
               </Grid>
             </Grid>
+          </div>
+          <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
+              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Grade Body</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
-              <Grid item>
-                <Typography className="text-sm">{detailVehicleData.gradebody ? detailVehicleData.gradebody : '-'}</Typography>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.grade_body ? convDate(detailVehicleData.grade_body, 'YYYY/MM/DD') : '-'}</Typography>
               </Grid>
             </Grid>
-          </div>
-          <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
+              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Grade Mesin</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
-              <Grid item >
-                <Typography className="text-sm">{detailVehicleData.grademesin ? detailVehicleData.grademesin : '-'}</Typography>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Jarak Tempuh</b></Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">:</Typography>
-              </Grid>
               <Grid item>
-                <Typography className="text-sm">{detailVehicleData.km ? `${thousandSeparator(detailVehicleData.km)} KM` : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.grade_mesin ? detailVehicleData.grade_mesin : '-'}</Typography>
               </Grid>
             </Grid>
           </div>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Bottom Price</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Overall Grade</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{isNumber(detailVehicleData.bottom_price) ? `Rp. ${thousandSeparator(detailVehicleData.bottom_price)}` : 'Tidak Diketahui'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.overall_grade ? convDate(detailVehicleData.overall_grade, 'YYYY/MM/DD') : '-'}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Harga Terbentuk</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Masa Berlaku Pajak</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item>
-                <Typography className="text-sm">{isNumber(detailVehicleData.harga_terbentuk) ? `Rp. ${thousandSeparator(detailVehicleData.harga_terbentuk)}` : 'Tidak Diketahui'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.masa_berlaku_pajak ? detailVehicleData.masa_berlaku_pajak : '-'}</Typography>
               </Grid>
             </Grid>
           </div>
           <div className="flex">
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Harga Terendah</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Masa Berlaku STNK</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.harga_bawah ? `Rp. ${thousandSeparator(detailVehicleData.harga_bawah)}` : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.masa_berlaku_stnk ? convDate(detailVehicleData.masa_berlaku_stnk, 'YYYY/MM/DD') : '-'}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4.5} className="mb-2">
-                <Typography className="text-sm"><b>Harga Tertinggi</b></Typography>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Final Status</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.final_status ? detailVehicleData.final_status : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Vehicle Brand</b></Typography>
               </Grid>
               <Grid item >
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.harga_atas ? `Rp. ${thousandSeparator(detailVehicleData.harga_atas)}` : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.vehicle_brand ? detailVehicleData.vehicle_brand : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Vehicle Transmission</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.vehicle_transmission ? detailVehicleData.vehicle_transmission : '-'}</Typography>
               </Grid>
             </Grid>
           </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Vehicle CC</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.vehicle_cc ? detailVehicleData.vehicle_cc : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Vehicle Type</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.vehicle_type ? detailVehicleData.vehicle_type : '-'}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Harga Atas</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.ai_harga_atas ? `Rp. ${thousandSeparator(detailVehicleData.ai_harga_atas)}` : "-"}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Harga Bawah</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.ai_harga_bawah ? `Rp. ${thousandSeparator(detailVehicleData.ai_harga_bawah)}` : "-"}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Harga History</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.harga_history ? `Rp. ${thousandSeparator(detailVehicleData.harga_history)}` : "-"}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b></b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm"></Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm"></Typography>
+              </Grid>
+            </Grid>
+          </div>
+
 
         </DialogContent>
         <DialogActions style={{
@@ -848,136 +1092,190 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "tanggal_jual",
+      name: "agreement_no",
       label: "Tanggal Jual",
       display: false,
-      customBodyRender: (value) => (value ? convDate(value, 'DD/MM/YYYY') : "-"),
-    },
-    {
-      name: "lokasi",
-      label: "Lokasi",
-      display: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "desciption",
-      label: "Description",
-      display: true,
-      customBodyRender: (value) => (value ? value : "-"),
-    },
-    {
-      name: "jenismobil",
-      label: "Jenis Mobil",
-      display: true,
-      customBodyRender: (value) => (value ? value : "-"),
-    },
-    {
-      name: "transmisi",
-      label: "Transmisi",
-      display: true,
-      customBodyRender: (value) => (value ? value : "-"),
-    },
-    {
-      name: "year",
-      label: "Year",
-      display: true,
-      customBodyRender: (value) => (value ? value : "-"),
-    },
-    {
-      name: "color",
-      label: "Color",
+      name: "asset_desc",
+      label: "Asset Desc",
       display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "ai_nama_mobil",
+      label: "Vehicle Name",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "vehicle_transmission",
+      label: "Vehicle Transmission",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "tahun",
+      label: "Tahun",
+      display: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
       name: "nopol",
       label: "Nopol",
       display: false,
-      customBodyRender: (value) => (value ? convDate(value, 'DD/MM/YYYY') : "-"),
+      customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "pajak",
-      label: "Pajak",
+      name: "umur",
+      label: "Umur Kendaraan",
+      display: false,
+      customBodyRender: (value) => (value ? `${value} Tahun` : "-"),
+    },
+    {
+      name: "noka",
+      label: "Nomor Rangka",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "stnk",
-      label: "STNK",
+      name: "nosin",
+      label: "Nomor Mesin",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "grade_all",
-      label: "Grade All",
+      name: "warna",
+      label: "Warna",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "gradeinterior",
+      name: "lokasi_unit",
+      label: "Lokasi Unit",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "kota",
+      label: "Kota",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "provinsi",
+      label: "Provinsi",
+      display: true,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "receive_date",
+      label: "Receive Date",
+      display: false,
+      customBodyRender: (value) => (value ? convDate(value, 'YYYY/MM/DD') : "-"),
+    },
+    {
+      name: "inspection_date",
+      label: "Inspection Date",
+      display: false,
+      customBodyRender: (value) => (value ? convDate(value, 'YYYY/MM/DD') : "-"),
+    },
+    {
+      name: "approval_date",
+      label: "Approval Date",
+      display: false,
+      customBodyRender: (value) => (value ? convDate(value, 'YYYY/MM/DD') : "-"),
+    },
+    {
+      name: "qc_date",
+      label: "QC Date",
+      display: false,
+      customBodyRender: (value) => (value ? convDate(value, 'YYYY/MM/DD') : "-"),
+    },
+    {
+      name: "grade_interior",
       label: "Grade Interior",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "gradebody",
-      label: "Grade Body",
+      name: "grade_body",
+      label: "grade_body",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "grademesin",
+      name: "grade_mesin",
       label: "Grade Mesin",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "km",
-      label: "KM",
+      name: "overall_grade",
+      label: "Overall Grade",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "bottom_price",
-      label: "Bottom Price",
+      name: "masa_berlaku_pajak",
+      label: "Masa Berlaku Pajak",
+      display: false,
+      customBodyRender: (value) => (value ? convDate(value, 'YYYY/MM/DD') : "-"),
+    },
+    {
+      name: "masa_berlaku_stnk",
+      label: "Masa Berlaku STNK",
+      display: false,
+      customBodyRender: (value) => (value ? convDate(value, 'YYYY/MM/DD') : "-"),
+    },
+    {
+      name: "final_status",
+      label: "Final Status",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "status",
-      label: "Status",
+      name: "vehicle_brand",
+      label: "Vehicle Brand",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "harga_terbentuk",
-      label: "Harga Terbentuk",
+      name: "vehicle_cc",
+      label: "Vehicle CC",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "nama_mobil",
-      label: "Nama Mobil",
+      name: "vehicle_type",
+      label: "Vehicle Type",
       display: false,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "harga_bawah",
-      label: "Harga Terbawah",
+      name: "vehicle_model",
+      label: "Vehicle Model",
+      display: false,
+      customBodyRender: (value) => (value ? value : "-"),
+    },
+    {
+      name: "harga_history",
+      label: "Harga History",
       display: true,
       customBodyRender: (value) => (value !== null ? `Rp. ${thousandSeparator(value)}` : "-"),
     },
     {
-      name: "harga_atas",
-      label: "Harga Teratas",
+      name: "ai_harga_atas",
+      label: "Harga Atas",
       display: true,
       customBodyRender: (value) => (value !== null ? `Rp. ${thousandSeparator(value)}` : "-"),
     },
     {
-      name: "umurmobil",
-      label: "Umur Mobil",
-      display: false,
-      customBodyRender: (value) => (value ? value : "-"),
+      name: "ai_harga_bawah",
+      label: "Harga Bawah",
+      display: true,
+      customBodyRender: (value) => (value !== null ? `Rp. ${thousandSeparator(value)}` : "-"),
     },
     {
       name: "hit_count",
@@ -985,7 +1283,6 @@ export default function MarketPrediction() {
       display: true,
       customBodyRender: (value) => (value > 0 ? <Typography className="text-green-700 font-semibold">Yes</Typography> : <Typography className="text-red-700 font-semibold">No</Typography>),
     },
-
   ];
 
   const handleReload = (params) => {
@@ -1037,6 +1334,11 @@ export default function MarketPrediction() {
     }
     setFormData({ ...formData, [name]: value })
     // setErrorMessage({ ...errorMessage, [name]: null })
+  }
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target
+    setFilter(value)
   }
 
 
@@ -1141,6 +1443,7 @@ export default function MarketPrediction() {
       <div>
         {renderModalDetail()}
         {renderPredictionAccordion()}
+        {renderModalSearch()}
         {tabsValue === 0 ? <Datatable
           creatable={false}
           title={"Table List"}
