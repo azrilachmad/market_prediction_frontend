@@ -707,12 +707,12 @@ export default function MarketPrediction() {
 
                         id: detailVehicleData.id,
                         jenis_kendaraan: 'Mobil',
-                        nama_kendaraan: `${detailVehicleData.desciption}`,
-                        tahun_kendaraan: `${detailVehicleData.year}`,
-                        jarak_tempuh_kendaraan: `${detailVehicleData.km}`,
-                        transmisi_kendaraan: detailVehicleData.transmisi === 'AT' ? 'Automatic' : detailVehicleData.transmisi === 'MT' ? 'Manual' : '',
+                        nama_kendaraan: `${detailVehicleData.ai_nama_mobil}`,
+                        tahun_kendaraan: `${detailVehicleData.tahun}`,
+                        // jarak_tempuh_kendaraan: `${detailVehicleData.jarak}`,
+                        transmisi_kendaraan: detailVehicleData.vehicle_transmission === 'AT' ? 'Automatic' : detailVehicleData.vehicle_transmission === 'MT' ? 'Manual' : '',
                         bahan_bakar: 'Bensin',
-                        wilayah_kendaraan: `${detailVehicleData.lokasi}`
+                        wilayah_kendaraan: `${detailVehicleData.kota}, ${detailVehicleData.provinsi}`
                       })
                       toggleModalDetail('close')
                       setIsPredictedData(true)
@@ -860,7 +860,7 @@ export default function MarketPrediction() {
                         />
                       </div>
                     </Grid>
-                    <Grid item xs={4} className="mb-[24px]">
+                    <Grid item xs={6} className="mb-[24px]">
                       <div>
                         <Typography className="mb-2">Tahun Kendaraan</Typography>
                         <MInput
@@ -874,8 +874,8 @@ export default function MarketPrediction() {
                         />
                       </div>
                     </Grid>
-                    <Grid item xs={4} className="mb-[24px]">
-                      <div>
+                    {/* <Grid item xs={4} className="mb-[24px]"> */}
+                      {/* <div>
                         <Typography className="mb-2">Jarak Tempuh Kendaraan</Typography>
                         <MInput
                           fullwidth
@@ -887,9 +887,9 @@ export default function MarketPrediction() {
 
                           errorMessage={errorMessage && errorMessage?.quotation_number ? errorMessage?.quotation_number[0] : false}
                         />
-                      </div>
-                    </Grid>
-                    <Grid item xs={4} className="mb-[24px]">
+                      </div> */}
+                    {/* </Grid> */}
+                    <Grid item xs={6} className="mb-[24px]">
                       <div>
                         <Typography className="mb-2">Transmisi Kendaraan</Typography>
                         <MSelect
