@@ -72,7 +72,7 @@ export const createUser = async (params) => {
 };
 
 export const editUser = async (params) => {
-    const { userType, name, email, password, confirmPassword, } = params;
+    const { id, userType, name, email, password, confirmPassword, } = params;
 
 
     const config = {
@@ -83,6 +83,7 @@ export const editUser = async (params) => {
         },
     }
     const data = {
+        ...(id && { id }),
         ...(userType && { userType }),
         ...(name && { name }),
         ...(email && { email }),
@@ -92,7 +93,7 @@ export const editUser = async (params) => {
 
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/user/edit/`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/user/edit/${id}`,
             data, // Pass the `data` object directly
             config
         );

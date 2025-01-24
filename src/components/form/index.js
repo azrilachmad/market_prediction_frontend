@@ -142,7 +142,18 @@ export const ModalTitle = ({ title, onClose, ...props }) => {
   );
 };
 
-export const MSelect = ({ menuProps, fullWidth, shrink, className, error, keyPair, options, variant, loading, required, ...props }) => {
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+export const MSelect = ({fullWidth, shrink, className, error, keyPair, options, variant, loading, required, ...props }) => {
   const renderOptions = (options) => {
     return options.map((value) => {
       // destructure the data row based on keyPair array value
@@ -166,7 +177,7 @@ export const MSelect = ({ menuProps, fullWidth, shrink, className, error, keyPai
         variant={variant ? variant : 'outlined'}
         IconComponent={loading ? () => <CircularProgress color="inherit" size={15} style={{ marginRight: 15 }} /> : undefined}
         required={required ? true : false}
-        MenuProps={menuProps}
+        MenuProps={MenuProps}
         {...props}
       >
         {renderOptions(options)}
