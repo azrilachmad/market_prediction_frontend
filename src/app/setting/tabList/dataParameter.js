@@ -2,7 +2,7 @@ import { Datatable } from "@/components/datatable"
 import { MButton, MInput, ModalTitle, MSelect } from "@/components/form";
 import { convDate, showPopup } from "@/helpers";
 import { DataContext } from "@/helpers/dataContext";
-import { createDataParameter, deleteDataParameter, editDataParameter, getDataParameterList } from "@/service/dataParameter";
+import { createDataParameter, deleteDataParameter, editDataParameter, getDataParameterList, getVehicleColumn } from "@/service/dataParameter";
 import { createUser, deleteUser } from "@/service/user";
 import { closeBtn } from "@/styles/theme/theme";
 import { primaryButton } from "@/themes/theme";
@@ -55,6 +55,19 @@ export const DataParameter = () => {
         setFormData({ ...formData, [name]: value })
         setErrorMessage({ ...errorMessage, [name]: null })
     }
+
+    const {
+        data: vehicleColumn,
+        isLoading: isLoadingVehicleColumn,
+        refetch: mutateVehicleColumn,
+    } = useQuery({
+        queryKey: [
+            "vehicle-column",
+            {
+            },
+        ],
+        queryFn: ({ queryKey }) => getVehicleColumn(queryKey[1]),
+    });
 
     const {
         data: dataParameterData,
@@ -307,18 +320,18 @@ export const DataParameter = () => {
                                 onChange={(event) => handleInputChange(event)}
                                 errorMessage={errorMessage && errorMessage?.parameter ? errorMessage?.parameter : false}
                             />
-                            <MInput
-                                fullwidth
-                                style={{ marginBottom: 18 }}
-                                variant="outlined"
-                                name="table_column"
+                            <MSelect
+                                fullWidth
                                 label="Table Column"
-                                placeholder="Input Table Column"
+                                name="table_column"
                                 value={formData.table_column}
                                 onChange={(event) => handleInputChange(event)}
-                                errorMessage={errorMessage && errorMessage?.table_column ? errorMessage?.table_column : false}
+                                error={errorMessage && errorMessage?.table_column ? errorMessage?.table_column : null}
+                                keyPair={['id', 'name']}
+                                options={vehicleColumn?.data}
+                                required
                             />
-                            <Typography>Status:</Typography>
+                            <Typography className="mt-2">Status:</Typography>
                             <FormControlLabel control={<Switch name="status" checked={formData.status} onChange={(e) => { handleSwitchChange(e) }} />} label={formData.status === false ? "Disabled" : formData.status === true ? 'Enabled' : ''} />
 
                         </div>

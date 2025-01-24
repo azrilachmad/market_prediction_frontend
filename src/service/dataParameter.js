@@ -5,6 +5,32 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 const token = getCookieValueByKey("token");
 
+export const getVehicleColumn = async (params) => {
+
+
+    const config = {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        params: {
+        }
+    }
+
+    try {
+        const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/data-parameter/get-column`, config
+        );
+        if (response) {
+            return response.data
+        }
+    } catch (error) {
+
+    }
+
+};
+
 export const getDataParameterList = async (params) => {
     const { page, limit, query, sortBy, order, } = params;
 
