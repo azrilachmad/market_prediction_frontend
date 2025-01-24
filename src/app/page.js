@@ -77,7 +77,7 @@ export default function Home() {
         enqueueSnackbar('Logged In', { variant: 'success' });
         setCookie(null, 'token', response.data.token, { path: '/' });
         setCookie(null, 'authenticated', true, { path: '/' });
-        router.push('/dashboard');
+        window.location.href = '/dashboard'
       }
     } catch (error) {
       enqueueSnackbar('Login failed', { variant: 'error' });
