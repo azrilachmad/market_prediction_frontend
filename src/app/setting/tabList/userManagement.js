@@ -2,7 +2,7 @@ import { Datatable } from "@/components/datatable"
 import { MButton, MInput, ModalTitle, MSelect } from "@/components/form";
 import { convDate, showPopup } from "@/helpers";
 import { DataContext } from "@/helpers/dataContext";
-import { createUser, deleteUser, getUserList } from "@/service/user";
+import { createUser, deleteUser, editUser, getUserList } from "@/service/user";
 import { closeBtn } from "@/styles/theme/theme";
 import { primaryButton } from "@/themes/theme";
 import { Delete, Edit, Search } from "@mui/icons-material";
@@ -121,6 +121,8 @@ export const UserManagement = () => {
             setFormData(initialValue)
             setModalDetail(false)
             setModalForm(false)
+            setErrorMessage()
+            
         }
     }
 
@@ -261,6 +263,7 @@ export const UserManagement = () => {
         e.preventDefault();
 
         const params = {
+            id: data.id,
             userType: data.userType,
             name: data.name,
             email: data.email,
