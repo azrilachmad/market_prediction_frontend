@@ -71,7 +71,7 @@ export default function MarketPrediction() {
     vehicle_cc: null,
     vehicle_type: null,
     vehicle_model: null,
-    harga_history: null,
+    ai_harga_history: null,
     ai_harga_atas: null,
     ai_harga_bawah: null,
     hit_count: null,
@@ -165,7 +165,7 @@ export default function MarketPrediction() {
         vehicle_cc: params[27],
         vehicle_type: params[28],
         vehicle_model: params[29],
-        harga_history: params[30],
+        ai_harga_history: params[30],
         ai_harga_atas: params[31],
         ai_harga_bawah: params[32],
         hit_count: params[33],
@@ -202,7 +202,7 @@ export default function MarketPrediction() {
         vehicle_cc: null,
         vehicle_type: null,
         vehicle_model: null,
-        harga_history: null,
+        ai_harga_history: null,
         ai_harga_atas: null,
         ai_harga_bawah: null,
         hit_count: null,
@@ -610,7 +610,7 @@ export default function MarketPrediction() {
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.harga_history ? `Rp. ${thousandSeparator(detailVehicleData.harga_history)}` : "-"}</Typography>
+                <Typography className="text-sm">{detailVehicleData.ai_harga_history ? `Rp. ${thousandSeparator(detailVehicleData.ai_harga_history)}` : "-"}</Typography>
               </Grid>
             </Grid>
 
@@ -1213,7 +1213,7 @@ export default function MarketPrediction() {
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
-      name: "harga_history",
+      name: "ai_harga_history",
       label: "Harga History",
       display: true,
       customBodyRender: (value) => (value !== null ? `Rp. ${thousandSeparator(value)}` : "-"),
