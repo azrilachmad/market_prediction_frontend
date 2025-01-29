@@ -353,54 +353,6 @@ export default function MarketPrediction() {
           <div className="flex">
             <Grid container spacing={2}>
               <Grid item xs={3.5} className="mb-2">
-                <Typography className="text-sm"><b>Umur Mobil</b></Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">:</Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">{detailVehicleData.umurmobil ? `${detailVehicleData.umurmobil} Tahun` : '-'}</Typography>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={3.5} className="mb-2">
-                <Typography className="text-sm"><b>Color</b></Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">:</Typography>
-              </Grid>
-              <Grid item>
-                <Typography className="text-sm">{detailVehicleData.color ? detailVehicleData.color : '-'}</Typography>
-              </Grid>
-            </Grid>
-          </div>
-          <div className="flex">
-            <Grid container spacing={2}>
-              <Grid item xs={3.5} className="mb-2">
-                <Typography className="text-sm"><b>Nopol</b></Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">:</Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">{detailVehicleData.nopol ? detailVehicleData.nopol : '-'}</Typography>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={3.5} className="mb-2">
-                <Typography className="text-sm"><b>Pajak</b></Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">:</Typography>
-              </Grid>
-              <Grid item>
-                <Typography className="text-sm">{detailVehicleData.pajak ? convDate(detailVehicleData.pajak, 'DD-MM-YYYY') : '-'}</Typography>
-              </Grid>
-            </Grid>
-          </div>
-          <div className="flex">
-            <Grid container spacing={2}>
-              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Nomor Mesin</b></Typography>
               </Grid>
               <Grid item >
@@ -527,7 +479,7 @@ export default function MarketPrediction() {
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.grade_body ? convDate(detailVehicleData.grade_body, 'YYYY/MM/DD') : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.grade_body ? detailVehicleData.grade_body : '-'}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -551,7 +503,7 @@ export default function MarketPrediction() {
                 <Typography className="text-sm">:</Typography>
               </Grid>
               <Grid item >
-                <Typography className="text-sm">{detailVehicleData.overall_grade ? convDate(detailVehicleData.overall_grade, 'YYYY/MM/DD') : '-'}</Typography>
+                <Typography className="text-sm">{detailVehicleData.overall_grade ? detailVehicleData.overall_grade : '-'}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -641,6 +593,31 @@ export default function MarketPrediction() {
           <div className="flex">
             <Grid container spacing={2}>
               <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Vehicle Model</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.vehicle_model ? detailVehicleData.vehicle_model : '-'}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Harga History</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.harga_history ? `Rp. ${thousandSeparator(detailVehicleData.harga_history)}` : "-"}</Typography>
+              </Grid>
+            </Grid>
+
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Harga Atas</b></Typography>
               </Grid>
               <Grid item >
@@ -659,30 +636,6 @@ export default function MarketPrediction() {
               </Grid>
               <Grid item>
                 <Typography className="text-sm">{detailVehicleData.ai_harga_bawah ? `Rp. ${thousandSeparator(detailVehicleData.ai_harga_bawah)}` : "-"}</Typography>
-              </Grid>
-            </Grid>
-          </div>
-          <div className="flex">
-            <Grid container spacing={2}>
-              <Grid item xs={3.5} className="mb-2">
-                <Typography className="text-sm"><b>Harga History</b></Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">:</Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">{detailVehicleData.harga_history ? `Rp. ${thousandSeparator(detailVehicleData.harga_history)}` : "-"}</Typography>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={3.5} className="mb-2">
-                <Typography className="text-sm"><b></b></Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm"></Typography>
-              </Grid>
-              <Grid item>
-                <Typography className="text-sm"></Typography>
               </Grid>
             </Grid>
           </div>
@@ -875,7 +828,7 @@ export default function MarketPrediction() {
                       </div>
                     </Grid>
                     {/* <Grid item xs={4} className="mb-[24px]"> */}
-                      {/* <div>
+                    {/* <div>
                         <Typography className="mb-2">Jarak Tempuh Kendaraan</Typography>
                         <MInput
                           fullwidth
