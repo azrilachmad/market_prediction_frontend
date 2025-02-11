@@ -98,7 +98,7 @@ export const JobSchedule = () => {
         const params = {
             id: formData.id,
             job_schedule: formData.job_schedule,
-            time: formData.time,
+            time: convDate(formData.time, 'YYYY-MM-DD HH'),
             max_record: formData.max_record,
         }
 
