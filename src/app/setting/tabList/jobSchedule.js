@@ -94,10 +94,12 @@ export const JobSchedule = () => {
 
     const handleSubmitForm = async (e) => {
         e.preventDefault();
+
         const params = {
             id: formData.id,
             job_schedule: formData.job_schedule,
-            time: formData.time,
+            time: convDate(formData.time, 'YYYY-MM-DD HH:mm:ss')
+            ,
             max_record: formData.max_record,
         }
 
