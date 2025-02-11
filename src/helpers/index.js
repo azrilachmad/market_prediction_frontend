@@ -157,6 +157,10 @@ export const convDate = (date, customFormat) => {
   }
 };
 
+export const convDateAsia = (date, format = "YYYY-MM-DD HH:mm:ss") => {
+  return dayjs(date).tz("Asia/Jakarta").format(format);
+};
+
 // POPUP HELPER
 
 export const showPopup = (type, ...rest) => {

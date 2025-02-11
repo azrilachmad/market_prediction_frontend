@@ -1,6 +1,6 @@
 import { Datatable } from "@/components/datatable"
 import { MButton, MInput, ModalTitle, MSelect, YMDatePicker } from "@/components/form";
-import { convDate, showPopup } from "@/helpers";
+import { convDate, convDateAsia, showPopup } from "@/helpers";
 import { DataContext } from "@/helpers/dataContext";
 import { getJobSchedule, editJobSchedule } from "@/service/jobSchedule";
 import { createUser, deleteUser } from "@/service/user";
@@ -98,7 +98,7 @@ export const JobSchedule = () => {
         const params = {
             id: formData.id,
             job_schedule: formData.job_schedule,
-            time: convDate(formData.time, 'YYYY-MM-DD HH:mm:ss'),
+            time: convDateAsia(formData.time),
             max_record: formData.max_record,
         }
 
@@ -165,7 +165,7 @@ export const JobSchedule = () => {
                                             className='w-[250px]'
                                             views={['hours', 'minutes']}
                                             name="time"
-                                            value={dayjs(`${formData.time}`)}
+                                            value={formData.time ? dayjs(formData.time).tz("Asia/Jakarta") : null} // Ensure it's Jakarta time
                                             onError={(newError) => setErrorMessage({ ...errorMessage, time: newError === 'invalidDate' ? 'Invalid Time' : newError })}
                                             slotProps={{
                                                 textField: {
@@ -174,7 +174,7 @@ export const JobSchedule = () => {
                                             }}
                                             timezone="Asia/Jakarta"
                                             onChange={(newValue) => {
-                                                setFormData({ ...formData, time: newValue })
+                                                setFormData({ ...formData, time: dayjs(newValue).tz("Asia/Jakarta") });
                                             }}
                                         />
                                     </LocalizationProvider>
@@ -211,7 +211,7 @@ export const JobSchedule = () => {
                             </Grid>
                         </form>
                     </>
-                ) : <CircularProgress/>
+                ) : <CircularProgress />
                 }
             </div>
         </>
