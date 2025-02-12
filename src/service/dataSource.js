@@ -89,7 +89,7 @@ export const editDataSource = async (params) => {
 
 
     try {
-        const response = await axios.post(
+        const response = await axios.put(
             `${process.env.NEXT_PUBLIC_API_URL}/api/data-source/edit/${id}`,
             data, // Pass the `data` object directly
             config
