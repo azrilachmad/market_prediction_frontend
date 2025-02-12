@@ -217,7 +217,7 @@ export const DataParameter = () => {
                                 <Typography className="text-sm">:</Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                <Typography className="text-sm">{formData.status === true ? 'Enabled' : formData.status === false ? "Disabled" : '-'}</Typography>
+                                <Typography className="text-sm">{formData.status === true || formData.status === 1 ? 'Enabled' : formData.status === false || formData.status === 0? "Disabled" : '-'}</Typography>
                             </Grid>
                         </Grid>
 
@@ -341,7 +341,7 @@ export const DataParameter = () => {
                     }}>
                         <ThemeProvider theme={primaryButton}>
                             <MButton
-                                label="CREATE USER"
+                                label={formData.edit === true ? "EDIT DATA" : "CREATE DATA"}
                                 type="submit"
                             />
                         </ThemeProvider>
