@@ -142,29 +142,37 @@ export const DataParameter = () => {
                     startIcon={<Search />}
                 />
             </Tooltip>
-            <Tooltip title="Edit">
-                <Button
-                    variant="contained"
-                    size="small"
-                    className="bg-[#E5AF5A] shadow-none text-white min-w-[10px] pr-0 ml-1"
-                    onClick={() => toggleModal('edit', 'open', params)}
-                    startIcon={<Edit />}
-                />
-            </Tooltip>
-            {
-                <Tooltip title="Delete">
-                    <Button
-                        variant="contained"
-                        size="small"
-                        className="bg-[#F44336] shadow-none text-white min-w-[10px] pr-0 ml-1"
-                        onClick={() => toggleModalDelete(params[1])}
-                        startIcon={<Delete />}
-                    />
-                </Tooltip>
+
+            {userProfile?.userProfile?.userType === '1' ? (
+                params[3] !== 'ai_nama_mobil' ? (
+                    <Tooltip title="Edit">
+                        <Button
+                            variant="contained"
+                            size="small"
+                            className="bg-[#E5AF5A] shadow-none text-white min-w-[10px] pr-0 ml-1"
+                            onClick={() => toggleModal('edit', 'open', params)}
+                            startIcon={<Edit />}
+                        />
+                    </Tooltip>
+                ) : (<></>)
+
+            ) : (<></>)}
+            {userProfile?.userProfile?.userType === '1' ? (
+
+                params[3] !== 'ai_nama_mobil' ? (
+                    <Tooltip Tooltip title="Delete" >
+                        <Button
+                            variant="contained"
+                            size="small"
+                            className="bg-[#F44336] shadow-none text-white min-w-[10px] pr-0 ml-1"
+                            onClick={() => toggleModalDelete(params[1])}
+                            startIcon={<Delete />}
+                        />
+                    </Tooltip>
+                ) : (<></>)
+            ) : (<></>)
             }
         </div>
-
-
     );
 
 
@@ -389,6 +397,7 @@ export const DataParameter = () => {
                     setFormData(initialValue)
                     toggleModal('create', 'open')
                 }}
+                creatable={userProfile?.userProfile?.userType === '1' ? true : false}
             />
         </>
     );
