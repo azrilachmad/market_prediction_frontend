@@ -7,6 +7,7 @@ const token = getCookieValueByKey("token");
 
 
 export const getCard1Data = async (params) => {
+  const { startDate, endDate } = params;
   const config = {
     headers: {
       Accept: "application/json",
@@ -14,6 +15,8 @@ export const getCard1Data = async (params) => {
       'Authorization': `Bearer ${token}`
     },
     params: {
+      ...startDate && { startDate: startDate },
+      ...endDate && { endDate: endDate },
     }
   }
 
@@ -31,6 +34,7 @@ export const getCard1Data = async (params) => {
 };
 
 export const getCard2Data = async (params) => {
+  const { startDate, endDate } = params;
   const config = {
     headers: {
       Accept: "application/json",
@@ -38,6 +42,8 @@ export const getCard2Data = async (params) => {
       'Authorization': `Bearer ${token}`
     },
     params: {
+      ...startDate && { startDate: startDate },
+      ...endDate && { endDate: endDate },
     }
   }
 
@@ -55,6 +61,7 @@ export const getCard2Data = async (params) => {
 };
 
 export const getCard3Data = async (params) => {
+  const { startDate, endDate } = params;
   const config = {
     headers: {
       Accept: "application/json",
@@ -62,6 +69,8 @@ export const getCard3Data = async (params) => {
       'Authorization': `Bearer ${token}`
     },
     params: {
+      ...startDate && { startDate: startDate },
+      ...endDate && { endDate: endDate },
     }
   }
 

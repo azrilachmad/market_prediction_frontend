@@ -21,7 +21,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
 import moment from "moment";
-import { isNumber, toNumber, update } from "lodash";
+import { isNumber, sortBy, toNumber, update } from "lodash";
 
 
 export default function MarketPrediction() {
@@ -107,6 +107,7 @@ export default function MarketPrediction() {
     limit: 10,
     order: 'desc',
     sortBy: null,
+    loading: false,
   })
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('')
@@ -233,7 +234,18 @@ export default function MarketPrediction() {
                 className='h-[40px] ml-4'
                 label={'Apply'}
                 onClick={(e) => {
+                  setVehicleQuery({
+                    ...vehicleQuery,
+                    loading: true,
+                  })
                   setQuery(filter)
+
+                  setTimeout(() => {
+                    setVehicleQuery({
+                      ...vehicleQuery,
+                      loading: false,
+                    })
+                  }, 1500)
                 }}
               />
             </ThemeProvider>
@@ -1060,18 +1072,21 @@ export default function MarketPrediction() {
       name: "ai_nama_mobil",
       label: "Vehicle Name",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
       name: "vehicle_transmission",
       label: "Vehicle Transmission",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
       name: "tahun",
       label: "Tahun",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
@@ -1114,12 +1129,14 @@ export default function MarketPrediction() {
       name: "kota",
       label: "Kota",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
       name: "provinsi",
       label: "Provinsi",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
@@ -1216,24 +1233,28 @@ export default function MarketPrediction() {
       name: "ai_harga_history",
       label: "Harga History",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value !== null ? `Rp. ${thousandSeparator(value)}` : "-"),
     },
     {
       name: "ai_harga_atas",
       label: "Harga Atas",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value !== null ? `Rp. ${thousandSeparator(value)}` : "-"),
     },
     {
       name: "ai_harga_bawah",
       label: "Harga Bawah",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value !== null ? `Rp. ${thousandSeparator(value)}` : "-"),
     },
     {
       name: "hit_count",
       label: "Checked",
       display: true,
+      sortThirdClickReset: true,
       customBodyRender: (value) => (value > 0 ? <Typography className="text-green-700 font-semibold">Yes</Typography> : <Typography className="text-red-700 font-semibold">No</Typography>),
     },
   ];
@@ -1400,7 +1421,7 @@ export default function MarketPrediction() {
         {tabsValue === 0 ? <Datatable
           creatable={false}
           title={"Table List"}
-          loading={isLoadingVehicleData}
+          loading={vehicleQuery.loading === true ? vehicleQuery.loading : isLoadingVehicleData}
           data={vehicleData?.data ? vehicleData?.data : []}
           total={vehicleData?.meta ? vehicleData?.meta?.total : 0}
           page={vehicleData?.meta ? vehicleData?.meta?.page : 1}
@@ -1416,8 +1437,8 @@ export default function MarketPrediction() {
             toggleModalForm('open')
           }}
           customActions={(params) => renderActions(params)}
-          // toggleResetAll={queryParams.resetDatatable}ha
-          // toggleResetPage={queryParams.resetPage}
+          toggleResetAll={true}
+          toggleResetPage={true}
           manualNumbering={false}
         /> : <></>}
 

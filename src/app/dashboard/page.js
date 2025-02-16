@@ -44,28 +44,34 @@ export default function Dashboard() {
     setFilterData({ ...filterData, [name]: event.$d })
   }
 
-  const { data: card1Data, isLoading: isLoadingCard1Data, } = useQuery({
+  const { data: card1Data, isLoading: isLoadingCard1Data, refetch: mutateCard1 } = useQuery({
     queryKey: [
       "card-data1",
       {
+        ...filterData.startDate && { startDate: convDate(filterData.startDate, 'YYYY-MM-DD') },
+        ...filterData.endDate && { endDate: convDate(filterData.endDate, 'YYYY-MM-DD') },
       },
     ],
     queryFn: ({ queryKey }) => getCard1Data(queryKey[1]),
   });
 
-  const { data: card2Data, isLoading: isLoadingCard2Data, } = useQuery({
+  const { data: card2Data, isLoading: isLoadingCard2Data, refetch: mutateCard2 } = useQuery({
     queryKey: [
       "card-data2",
       {
+        ...filterData.startDate && { startDate: convDate(filterData.startDate, 'YYYY-MM-DD') },
+        ...filterData.endDate && { endDate: convDate(filterData.endDate, 'YYYY-MM-DD') },
       },
     ],
     queryFn: ({ queryKey }) => getCard2Data(queryKey[1]),
   });
 
-  const { data: card3Data, isLoading: isLoadingCard3Data, } = useQuery({
+  const { data: card3Data, isLoading: isLoadingCard3Data, refetch: mutateCard3 } = useQuery({
     queryKey: [
       "card-data3",
       {
+        ...filterData.startDate && { startDate: convDate(filterData.startDate, 'YYYY-MM-DD') },
+        ...filterData.endDate && { endDate: convDate(filterData.endDate, 'YYYY-MM-DD') },
       },
     ],
     queryFn: ({ queryKey }) => getCard3Data(queryKey[1]),
@@ -97,7 +103,7 @@ export default function Dashboard() {
 
   const renderCardList = () => {
     return (
-      <>
+      <div className="mt-8">
         <Grid container spacing={4}>
           <Grid item xs={4} className="mt-4">
             <Paper variant="outlined" className="rounded-[10px]">
@@ -139,14 +145,14 @@ export default function Dashboard() {
             </Paper>
           </Grid>
         </Grid>
-      </>
+      </div>
     )
   }
 
   const renderFilterPaper = () => {
     return (
       <>
-        <Paper variant="outlined" className="w-[700px] rounded-[8px] p-4 mt-12">
+        <Paper variant="outlined" className="w-[700px] rounded-[8px] p-4">
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography className="font-bold mb-4">Filter:</Typography>
@@ -179,6 +185,9 @@ export default function Dashboard() {
                     label="Apply"
                     onClick={() => {
                       mutateLogData();
+                      mutateCard1()
+                      mutateCard2()
+                      mutateCard3()
                     }}
                   />
                 </ThemeProvider>
@@ -217,7 +226,7 @@ export default function Dashboard() {
 
     return (
       <>
-        <Grid container spacing={2} className="mt-2">
+        <Grid container spacing={2} className="mt-4">
           <Grid item xs={6}>
             <Paper variant="outlined" className="rounded-[10px] py-6">
               <div className="flex justify-center ">
@@ -308,8 +317,8 @@ export default function Dashboard() {
   return (
     <>
       <div>
-        {renderCardList()}
         {renderFilterPaper()}
+        {renderCardList()}
         {renderChartOne()}
       </div>
     </>
