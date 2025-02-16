@@ -135,6 +135,7 @@ export const JobSchedule = () => {
     dayjs.extend(utc);
     dayjs.extend(timezone);
 
+    console.log(userProfile?.userProfile?.userType)
     return (
         <>
             <div>
@@ -165,6 +166,7 @@ export const JobSchedule = () => {
                                             className='w-[250px]'
                                             views={['hours', 'minutes']}
                                             name="time"
+                                            ampm={false}
                                             value={formData.time ? dayjs(formData.time).tz("Asia/Jakarta") : null} // Ensure it's Jakarta time
                                             onError={(newError) => setErrorMessage({ ...errorMessage, time: newError === 'invalidDate' ? 'Invalid Time' : newError })}
                                             slotProps={{
@@ -176,6 +178,8 @@ export const JobSchedule = () => {
                                             onChange={(newValue) => {
                                                 setFormData({ ...formData, time: dayjs(newValue).tz("Asia/Jakarta") });
                                             }}
+                                            disabled={userProfile?.userProfile?.userType === '2' ? true : false}
+                                            readOnly={userProfile?.userProfile?.userType === '2' ? true : false}
                                         />
                                     </LocalizationProvider>
                                 </Grid>
@@ -196,18 +200,22 @@ export const JobSchedule = () => {
                                                 e.target.value = "1";
                                             }
                                         }}
+                                        disabled={userProfile?.userProfile?.userType === '2' ? true : false}
+                                        readOnly={userProfile?.userProfile?.userType === '2' ? true : false}
                                     />
                                 </Grid>
-                                <Grid item xs={12} flex alignItems='flex-end'>
-                                    <ThemeProvider theme={primaryButton}>
-                                        <MButton
-                                            type="submit"
-                                            label={"Update"}
-                                            // loading={isLoadingSubmit}
-                                            icon={<Send />}
-                                        />
-                                    </ThemeProvider>
-                                </Grid>
+                                {userProfile?.userProfile?.userType === '1' ? (
+                                    <Grid item xs={12} flex alignItems='flex-end'>
+                                        <ThemeProvider theme={primaryButton}>
+                                            <MButton
+                                                type="submit"
+                                                label={"Update"}
+                                                // loading={isLoadingSubmit}
+                                                icon={<Send />}
+                                            />
+                                        </ThemeProvider>
+                                    </Grid>
+                                ) : (<></>)}
                             </Grid>
                         </form>
                     </>
