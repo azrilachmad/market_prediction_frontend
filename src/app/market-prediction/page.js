@@ -12,7 +12,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import Accordion from '@mui/material/Accordion';
@@ -21,11 +21,12 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
 import moment from "moment";
+import { DataContext } from "@/helpers/dataContext";
 import { isNumber, sortBy, toNumber, update } from "lodash";
 
 
 export default function MarketPrediction() {
-
+  const userProfile = useContext(DataContext);
 
   const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
@@ -1007,7 +1008,7 @@ export default function MarketPrediction() {
                       label={"Simpan Data"}
                       icon={<Send />}
                       onClick={(e) => {
-                        updateVehicleData(e, predictionData)
+                        updateVehicleData(e, predictionData, userProfile?.userProfile?.id)
                       }}
                     />
                   </ThemeProvider>) : (<></>)}
@@ -1329,7 +1330,7 @@ export default function MarketPrediction() {
 
 
 
-  const updateVehicleData = async (e, params) => {
+  const updateVehicleData = async (e, params, userID) => {
     e.preventDefault()
     showPopup(
       'confirm',
@@ -1352,6 +1353,8 @@ export default function MarketPrediction() {
           ...harga_tertinggi && { harga_atas: harga_tertinggi * 1 },
           ...harga_terendah && { harga_bawah: harga_terendah * 1 },
           ...total_token && { total_token: total_token },
+          ...userID && { user: userID },
+          type: 'single',
           checked: true,
         }
 
