@@ -388,6 +388,7 @@ export const Datatable = (props) => {
         options: {
           filter: value.name,
           sort: value.name,
+          sortThirdClickReset: true,
           display: value.display,
           sortOrder: value.name === sortBy ? order : 'none',
           customBodyRender: customBodyRender(),

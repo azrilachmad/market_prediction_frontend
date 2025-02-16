@@ -112,6 +112,17 @@ export default function MarketPrediction() {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('')
 
+
+  useEffect(() => {
+    if(vehicleQuery.order === 'none') {
+      setVehicleQuery({
+        ...vehicleQuery,
+        sortBy: null,
+        order: 'desc'
+      })
+    }
+  }, [vehicleQuery]);
+
   const {
     data: vehicleData,
     isLoading: isLoadingVehicleData,
@@ -246,6 +257,7 @@ export default function MarketPrediction() {
                       loading: false,
                     })
                   }, 1500)
+                mutateVehicleData()
                 }}
               />
             </ThemeProvider>
@@ -992,7 +1004,7 @@ export default function MarketPrediction() {
                   {isPredictedData ? (<ThemeProvider theme={secondaryButton}>
                     <MButton
                       className="flex justify-end mb-4 mt-4"
-                      label={"Submit Data"}
+                      label={"Simpan Data"}
                       icon={<Send />}
                       onClick={(e) => {
                         updateVehicleData(e, predictionData)
