@@ -214,7 +214,7 @@ export default function Dashboard() {
     console.log(chartData)
 
     const xAxisData = chartData?.map((item) =>
-      new Date(item.date)
+      new Date(item.createdAt)
     );
     const totalToken = chartData?.map((item) => item.total_token);
     const averageToken = chartData?.map((item) => item.average_token);
