@@ -153,7 +153,7 @@ export default function MarketPrediction() {
       setIsPredictedData(false)
       setDetailVehicleData({
         id: params[1],
-        agreement_no: params[2] * 1,
+        agreement_no: params[2],
         asset_desc: params[3],
         ai_nama_mobil: params[4],
         vehicle_transmission: params[5],
