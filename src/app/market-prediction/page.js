@@ -1403,6 +1403,7 @@ export default function MarketPrediction() {
             enqueueSnackbar("Success Update Data", { variant: "success" })
             setIsPredictedData(false)
             mutateVehicleData()
+            setPredictionData(null)
           } else {
             enqueueSnackbar("Something went wrong", { variant: "error" })
             mutateVehicleData()
