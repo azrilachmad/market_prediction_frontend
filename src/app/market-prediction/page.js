@@ -76,6 +76,8 @@ export default function MarketPrediction() {
     ai_harga_atas: null,
     ai_harga_bawah: null,
     hit_count: null,
+    harga_history: null,
+    checked_date: null,
   })
 
   const [isPredictedData, setIsPredictedData] = useState(false)
@@ -88,6 +90,7 @@ export default function MarketPrediction() {
     transmisi_kendaraan: null,
     bahan_bakar: null,
     wilayah_kendaraan: null,
+    harga_history: null,
   })
 
   const [errorMessage, setErrorMessage] = useState({
@@ -115,7 +118,7 @@ export default function MarketPrediction() {
 
 
   useEffect(() => {
-    if(vehicleQuery.order === 'none') {
+    if (vehicleQuery.order === 'none') {
       setVehicleQuery({
         ...vehicleQuery,
         sortBy: null,
@@ -182,6 +185,7 @@ export default function MarketPrediction() {
         ai_harga_atas: params[31],
         ai_harga_bawah: params[32],
         hit_count: params[33],
+        checked_date: params[34],
       })
       setModalDetail(true)
     } else if (type === 'close') {
@@ -219,6 +223,7 @@ export default function MarketPrediction() {
         ai_harga_atas: null,
         ai_harga_bawah: null,
         hit_count: null,
+        checked_date: null,
       })
       setModalDetail(false)
     }
@@ -258,7 +263,7 @@ export default function MarketPrediction() {
                       loading: false,
                     })
                   }, 1500)
-                mutateVehicleData()
+                  mutateVehicleData()
                 }}
               />
             </ThemeProvider>
@@ -664,6 +669,30 @@ export default function MarketPrediction() {
               </Grid>
             </Grid>
           </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Checked Date</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm">{detailVehicleData.checked_date ? `${convDate(detailVehicleData.checked_date, 'DD/MM/YYYY')}` : "-"}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm"></Typography>
+              </Grid>
+              <Grid item>
+                <Typography className="text-sm"></Typography>
+              </Grid>
+            </Grid>
+          </div>
 
 
         </DialogContent>
@@ -690,7 +719,8 @@ export default function MarketPrediction() {
                         // jarak_tempuh_kendaraan: `${detailVehicleData.jarak}`,
                         transmisi_kendaraan: detailVehicleData.vehicle_transmission === 'AT' ? 'Automatic' : detailVehicleData.vehicle_transmission === 'MT' ? 'Manual' : '',
                         bahan_bakar: 'Bensin',
-                        wilayah_kendaraan: `${detailVehicleData.kota}, ${detailVehicleData.provinsi}`
+                        wilayah_kendaraan: `${detailVehicleData.kota}, ${detailVehicleData.provinsi}`,
+                        harga_history: ''
                       })
                       toggleModalDetail('close')
                       setIsPredictedData(true)
@@ -788,6 +818,7 @@ export default function MarketPrediction() {
       const options = [
         { id: 'Bensin', name: 'Bensin' },
         { id: 'Listrik', name: 'Listrik' },
+        { id: 'Solar', name: 'Solar' },
       ];
       return options;
     };
@@ -966,6 +997,19 @@ export default function MarketPrediction() {
                       <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_terendah * 1) ? thousandSeparator(predictionData?.harga_terendah) : predictionData?.harga_terendah}</Typography>
                     </Grid>
                   </Grid>
+                  {isPredictedData ? (<>
+                    <Grid container>
+                      <Grid item xs={3}>
+                        <Typography className="mb-2 font-[500]">Harga History</Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography className="mb-2 font-[500] mr-2">:</Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_history * 1) ? thousandSeparator(predictionData?.harga_history) : predictionData?.harga_history}</Typography>
+                      </Grid>
+                    </Grid>
+                  </>) : (<></>)}
                   <Grid container>
                     <Grid item xs={3}>
                       <Typography className="mb-2 font-[500]">Total Token:</Typography>
@@ -1270,6 +1314,13 @@ export default function MarketPrediction() {
       sortThirdClickReset: true,
       customBodyRender: (value) => (value > 0 ? <Typography className="text-green-700 font-semibold">Yes</Typography> : <Typography className="text-red-700 font-semibold">No</Typography>),
     },
+    {
+      name: "checked_date",
+      label: "Checked Date",
+      display: true,
+      sortThirdClickReset: true,
+      customBodyRender: (value) => (value ? convDate(value, 'DD-MM-YYYY') : "-"),
+    },
   ];
 
   const handleReload = (params) => {
@@ -1289,20 +1340,6 @@ export default function MarketPrediction() {
     if (type === 'open') {
       if (params) {
         setIsUpdate(true)
-        setFormData({
-          id: params[1],
-          document_name: params[2],
-          quotation_number: params[3],
-          customer_name: params[7],
-          customer_address: params[8],
-          customer_phone: params[9],
-          customer_company: params[4],
-          project_name: params[11],
-          products: params[12],
-          ppn: params[13],
-          note: params[14],
-          document_date: params[6],
-        })
         // console.log(params)
       } else {
         setIsUpdate(false)
@@ -1447,10 +1484,6 @@ export default function MarketPrediction() {
 
           handleReload={(params) => handleReload(params)}
           // handleDetail={(params) => this.toggleModal('detail', params)}
-          handleCreate={() => {
-            setFormData(initialValue)
-            toggleModalForm('open')
-          }}
           customActions={(params) => renderActions(params)}
           toggleResetAll={true}
           toggleResetPage={true}
