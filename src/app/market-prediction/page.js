@@ -997,7 +997,6 @@ export default function MarketPrediction() {
                       <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_terendah * 1) ? thousandSeparator(predictionData?.harga_terendah) : predictionData?.harga_terendah}</Typography>
                     </Grid>
                   </Grid>
-                  {isPredictedData ? (<>
                     <Grid container>
                       <Grid item xs={3}>
                         <Typography className="mb-2 font-[500]">Harga History</Typography>
@@ -1009,7 +1008,6 @@ export default function MarketPrediction() {
                         <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_history * 1) ? thousandSeparator(predictionData?.harga_history) : predictionData?.harga_history}</Typography>
                       </Grid>
                     </Grid>
-                  </>) : (<></>)}
                   <Grid container>
                     <Grid item xs={3}>
                       <Typography className="mb-2 font-[500]">Total Token:</Typography>
