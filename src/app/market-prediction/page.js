@@ -634,20 +634,6 @@ export default function MarketPrediction() {
             </Grid>
             <Grid container spacing={2}>
               <Grid item xs={3.5} className="mb-2">
-                <Typography className="text-sm"><b>Harga History</b></Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">:</Typography>
-              </Grid>
-              <Grid item >
-                <Typography className="text-sm">{detailVehicleData.ai_harga_history ? `Rp. ${thousandSeparator(detailVehicleData.ai_harga_history)}` : "-"}</Typography>
-              </Grid>
-            </Grid>
-
-          </div>
-          <div className="flex">
-            <Grid container spacing={2}>
-              <Grid item xs={3.5} className="mb-2">
                 <Typography className="text-sm"><b>Harga Atas</b></Typography>
               </Grid>
               <Grid item >
@@ -655,6 +641,20 @@ export default function MarketPrediction() {
               </Grid>
               <Grid item >
                 <Typography className="text-sm">{detailVehicleData.ai_harga_atas ? `Rp. ${thousandSeparator(detailVehicleData.ai_harga_atas)}` : "-"}</Typography>
+              </Grid>
+            </Grid>
+
+          </div>
+          <div className="flex">
+            <Grid container spacing={2}>
+              <Grid item xs={3.5} className="mb-2">
+                <Typography className="text-sm"><b>Harga History</b></Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">:</Typography>
+              </Grid>
+              <Grid item >
+                <Typography className="text-sm">{detailVehicleData.ai_harga_history ? `Rp. ${thousandSeparator(detailVehicleData.ai_harga_history)}` : "-"}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -997,17 +997,17 @@ export default function MarketPrediction() {
                       <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_terendah * 1) ? thousandSeparator(predictionData?.harga_terendah) : predictionData?.harga_terendah}</Typography>
                     </Grid>
                   </Grid>
-                    <Grid container>
-                      <Grid item xs={3}>
-                        <Typography className="mb-2 font-[500]">Harga History</Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography className="mb-2 font-[500] mr-2">:</Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_history * 1) ? thousandSeparator(predictionData?.harga_history) : predictionData?.harga_history}</Typography>
-                      </Grid>
+                  <Grid container>
+                    <Grid item xs={3}>
+                      <Typography className="mb-2 font-[500]">Harga History</Typography>
                     </Grid>
+                    <Grid item>
+                      <Typography className="mb-2 font-[500] mr-2">:</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_history * 1) ? thousandSeparator(predictionData?.harga_history) : predictionData?.harga_history}</Typography>
+                    </Grid>
+                  </Grid>
                   <Grid container>
                     <Grid item xs={3}>
                       <Typography className="mb-2 font-[500]">Total Token:</Typography>
