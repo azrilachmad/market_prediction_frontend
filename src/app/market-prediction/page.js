@@ -931,7 +931,7 @@ export default function MarketPrediction() {
                       <div>
                         <div className="flex">
                           <Typography className="mb-2">Wilayah Kendaraan</Typography>
-                          <Tooltip title="Format: Kota, Provinsi">
+                          <Tooltip title="Format: Kota">
                             <HelpOutline/>
                           </Tooltip>
                         </div>
