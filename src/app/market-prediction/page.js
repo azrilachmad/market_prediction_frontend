@@ -5,7 +5,7 @@ import { MButton, MInput, MSelect, ModalTitle, MuiInput, YMDatePicker } from "@/
 import { convDate, formatCurrency, showPopup, thousandSeparator } from "@/helpers";
 import { submitSinglePredict, getVehicleList, updateVehicles } from "@/service/marketPrediction";
 import { closeBtn, closeButton, primaryButton, secondaryButton, successButton } from "@/styles/theme/theme.js";
-import { Add, Clear, Delete, Edit, FileDownload, Restore, Search, Send } from "@mui/icons-material";
+import { Add, Clear, Delete, Edit, FileDownload, HelpOutline, Restore, Search, Send } from "@mui/icons-material";
 import { Box, Button, Checkbox, CircularProgress, Grid, IconButton, Paper, Tab, Tabs, ThemeProvider, Tooltip, Typography, createTheme } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -928,7 +928,12 @@ export default function MarketPrediction() {
                     </Grid>
                     <Grid item xs={6}>
                       <div>
-                        <Typography className="mb-2">Wilayah Kendaraan</Typography>
+                        <div className="flex">
+                          <Typography className="mb-2">Wilayah Kendaraan</Typography>
+                          <Tooltip title="Format: Kota, Provinsi">
+                            <HelpOutline/>
+                          </Tooltip>
+                        </div>
                         <MInput
                           fullwidth
                           style={{ marginBottom: 24 }}
@@ -1375,6 +1380,8 @@ export default function MarketPrediction() {
         const {
           id,
           nama_kendaraan,
+          tahun_kendaraan,
+          wilayah_kendaraan,
           harga_terendah,
           harga_tertinggi,
           total_token
@@ -1385,6 +1392,8 @@ export default function MarketPrediction() {
         const datas = {
           ...id && { id: id },
           ...nama_kendaraan && { desciption: nama_kendaraan },
+          ...tahun_kendaraan && { tahun_kendaraan: tahun_kendaraan },
+          ...wilayah_kendaraan && { wilayah_kendaraan: wilayah_kendaraan },
           ...harga_tertinggi && { harga_atas: harga_tertinggi * 1 },
           ...harga_terendah && { harga_bawah: harga_terendah * 1 },
           ...total_token && { total_token: total_token },
