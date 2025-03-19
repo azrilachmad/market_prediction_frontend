@@ -719,7 +719,8 @@ export default function MarketPrediction() {
                         // jarak_tempuh_kendaraan: `${detailVehicleData.jarak}`,
                         transmisi_kendaraan: detailVehicleData.vehicle_transmission === 'AT' || detailVehicleData.vehicle_transmission === '' || detailVehicleData.vehicle_transmission === 'CVT' ? 'Automatic' : detailVehicleData.vehicle_transmission === 'MT' ? 'Manual' : '',
                         bahan_bakar: 'Bensin',
-                        wilayah_kendaraan: `${detailVehicleData.kota}, ${detailVehicleData.provinsi}`,
+                        wilayah_kendaraan: `${detailVehicleData.kota}`,
+                        // wilayah_kendaraan: `${detailVehicleData.kota}, ${detailVehicleData.provinsi}`,
                         harga_history: ''
                       })
                       toggleModalDetail('close')
