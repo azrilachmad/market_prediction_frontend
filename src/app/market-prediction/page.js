@@ -858,8 +858,12 @@ export default function MarketPrediction() {
                     </Grid>
                     <Grid item xs={6}>
                       <div>
-                        <Typography className="mb-2">Nama Kendaraan</Typography>
-                        <MInput
+                      <div className="flex">
+                          <Typography className="mb-2">Nama Kendaraan</Typography>
+                          <Tooltip title="Input dengan format Merk<spasi>Model<spasi>CC [opsional]. Contoh: Toyota Avanza 1.3, Mitsubishi Colt T120SS, Yamaha New Vixion STD">
+                            <HelpOutline/>
+                          </Tooltip>
+                        </div>                        <MInput
                           fullwidth
                           variant="outlined"
                           name="nama_kendaraan"
