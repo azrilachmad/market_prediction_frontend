@@ -989,7 +989,7 @@ export default function MarketPrediction() {
                       <Typography className="mb-2 font-[500] mr-2">:</Typography>
                     </Grid>
                     <Grid item>
-                      <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_tertinggi * 1) ? thousandSeparator(predictionData?.harga_tertinggi) : predictionData?.harga_terendah}</Typography>
+                      <Typography className="mb-2 "> Rp. {predictionData?.harg_tertinggi === null ? '' : thousandSeparator(predictionData?.harga_tertinggi * 1)}</Typography>
                     </Grid>
                   </Grid>
                   <Grid container>
@@ -1000,7 +1000,7 @@ export default function MarketPrediction() {
                       <Typography className="mb-2 font-[500] mr-2">:</Typography>
                     </Grid>
                     <Grid item>
-                      <Typography className="mb-2 "> Rp. {!isNaN(predictionData?.harga_terendah * 1) ? thousandSeparator(predictionData?.harga_terendah) : predictionData?.harga_terendah}</Typography>
+                      <Typography className="mb-2 "> Rp. {predictionData?.harga_terendah === null ? '' : thousandSeparator(predictionData?.harga_terendah * 1)}</Typography>
                     </Grid>
                   </Grid>
                   <Grid container>
@@ -1295,7 +1295,7 @@ export default function MarketPrediction() {
       label: "Harga History",
       display: true,
       sortThirdClickReset: true,
-      customBodyRender: (value) => (value !== null ? `Rp. ${thousandSeparator(value)}` : "-"),
+      customBodyRender: (value) => (value === null || value === 0 ? '-' : `Rp. ${thousandSeparator(value)}`),
     },
     {
       name: "ai_harga_atas",
