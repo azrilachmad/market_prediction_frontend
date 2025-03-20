@@ -935,7 +935,7 @@ export default function MarketPrediction() {
                       <div>
                         <div className="flex">
                           <Typography className="mb-2">Wilayah Kendaraan</Typography>
-                          <Tooltip title="Format: Kota">
+                          <Tooltip title={`Input dengan format Kota. \n Contoh: Jakarta, Bandung, Semarang`}>
                             <HelpOutline/>
                           </Tooltip>
                         </div>
