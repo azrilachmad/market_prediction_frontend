@@ -7,7 +7,7 @@ import { createUser, deleteUser } from "@/service/user";
 import { closeBtn } from "@/styles/theme/theme";
 import { primaryButton } from "@/themes/theme";
 import { Delete, Edit, Search, Send } from "@mui/icons-material";
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, FormControlLabel, Grid, Switch, ThemeProvider, Tooltip, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, FormControlLabel, Grid, Slider, Switch, ThemeProvider, Tooltip, Typography } from "@mui/material"
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -27,6 +27,8 @@ export const JobSchedule = () => {
         job_schedule: null,
         time: null,
         max_record: false,
+        ai_iqr: 1.5,
+        ai_temp: 1,
         edit: false
     })
 
@@ -35,6 +37,8 @@ export const JobSchedule = () => {
         job_schedule: null,
         time: null,
         max_record: false,
+        ai_iqr: 1.5,
+        ai_temp: 1,
         edit: false
     }
 
@@ -88,6 +92,8 @@ export const JobSchedule = () => {
                 job_schedule: jobScheduleData.data.job_schedule,
                 time: jobScheduleData.data.time,
                 max_record: jobScheduleData.data.max_record,
+                ai_iqr: jobScheduleData.data.ai_iqr,
+                ai_temp: jobScheduleData.data.ai_temp,
             })
         }
     }, [formData, jobScheduleData?.data]);
@@ -100,6 +106,8 @@ export const JobSchedule = () => {
             job_schedule: formData.job_schedule,
             time: convDateAsia(formData.time),
             max_record: formData.max_record,
+            ai_iqr: formData.ai_iqr,
+            ai_temp: formData.ai_temp,
         }
 
         const response = await editJobSchedule(params)
@@ -135,7 +143,8 @@ export const JobSchedule = () => {
     dayjs.extend(utc);
     dayjs.extend(timezone);
 
-    console.log(userProfile?.userProfile?.userType)
+    // console.log(userProfile?.userProfile?.userType)
+    console.log(formData.ai_iqr)
     return (
         <>
             <div>
@@ -203,6 +212,44 @@ export const JobSchedule = () => {
                                         disabled={userProfile?.userProfile?.userType === '2' ? true : false}
                                         readOnly={userProfile?.userProfile?.userType === '2' ? true : false}
                                     />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Typography className="mt-4 text-[18px] font-[600]">AI Engine Setting:</Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography className="text-md mb-1 ">AI Temperature:</Typography>
+                                    <Box sx={{ width: 300 }}>
+                                        <Slider
+                                            aria-label="Temperature"
+                                            defaultValue={formData.ai_temp}
+                                            valueLabelDisplay="auto"
+                                            step={0.1}
+                                            marks
+                                            min={0.5}
+                                            max={2}
+                                            name="ai_temp"
+                                            onChange={(event) => handleInputChange(event)}>
+
+                                        </Slider>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography className="text-md mb-1 ">IQR Number (Multiplier):</Typography>
+                                    <Box sx={{ width: 300 }}>
+                                        <Slider
+                                            aria-label="IQR Number (Numtiplier)"
+                                            defaultValue={formData.ai_iqr}
+                                            valueLabelDisplay="auto"
+                                            step={0.1}
+                                            marks
+                                            min={1}
+                                            max={3}
+                                            name="ai_iqr"
+                                            onChange={(event) => handleInputChange(event)}>
+
+                                        </Slider>
+                                    </Box>
                                 </Grid>
                                 {userProfile?.userProfile?.userType === '1' ? (
                                     <Grid item xs={12} flex alignItems='flex-end'>

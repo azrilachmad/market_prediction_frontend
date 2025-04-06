@@ -39,7 +39,7 @@ export const getJobSchedule = async (params) => {
 
 
 export const editJobSchedule = async (params) => {
-    const {id, job_schedule, time, max_record } = params;
+    const {id, job_schedule, time, max_record, ai_iqr, ai_temp } = params;
 
 
     const config = {
@@ -53,6 +53,8 @@ export const editJobSchedule = async (params) => {
         ...(job_schedule && { job_schedule }),
         ...(time && { time }),
         ...(max_record && { max_record }),
+        ...(ai_iqr && { ai_iqr }),
+        ...(ai_temp && { ai_temp }),
     };
 
 
