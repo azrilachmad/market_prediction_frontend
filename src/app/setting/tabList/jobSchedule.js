@@ -218,7 +218,7 @@ export const JobSchedule = () => {
                                     <Typography className="mt-4 text-[18px] font-[600]">AI Engine Setting:</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Typography className="text-md mb-1 ">AI Temperature:</Typography>
+                                    <Typography className="text-md mb-1 ">AI Temperature: {formData.ai_temp}</Typography>
                                     <Box sx={{ width: 300 }}>
                                         <Slider
                                             aria-label="Temperature"
@@ -235,7 +235,7 @@ export const JobSchedule = () => {
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Typography className="text-md mb-1 ">IQR Number (Multiplier):</Typography>
+                                    <Typography className="text-md mb-1 ">IQR Number (Multiplier): x{formData.ai_iqr}</Typography>
                                     <Box sx={{ width: 300 }}>
                                         <Slider
                                             aria-label="IQR Number (Numtiplier)"
