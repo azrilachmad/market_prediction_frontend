@@ -1123,8 +1123,8 @@ export default function MarketPrediction() {
     },
     {
       name: "agreement_no",
-      label: "Tanggal Jual",
-      display: false,
+      label: "Agreement No.",
+      display: true,
       customBodyRender: (value) => (value ? value : "-"),
     },
     {
