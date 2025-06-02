@@ -29,6 +29,7 @@ export const JobSchedule = () => {
         max_record: false,
         ai_iqr: 1.5,
         ai_temp: 1,
+        interval: 60,
         edit: false
     })
 
@@ -39,6 +40,7 @@ export const JobSchedule = () => {
         max_record: false,
         ai_iqr: 1.5,
         ai_temp: 1,
+        interval: 60,
         edit: false
     }
 
@@ -94,6 +96,7 @@ export const JobSchedule = () => {
                 max_record: jobScheduleData.data.max_record,
                 ai_iqr: jobScheduleData.data.ai_iqr,
                 ai_temp: jobScheduleData.data.ai_temp,
+                interval: jobScheduleData.data.interval,
             })
         }
     }, [formData, jobScheduleData?.data]);
@@ -108,6 +111,7 @@ export const JobSchedule = () => {
             max_record: formData.max_record,
             ai_iqr: formData.ai_iqr,
             ai_temp: formData.ai_temp,
+            interval: formData.interval,
         }
 
         const response = await editJobSchedule(params)
@@ -134,8 +138,8 @@ export const JobSchedule = () => {
 
     const jobScheduleOption = () => {
         const options = [
-            { id: 'Daily', name: 'Daily' },
-            { id: 'Weekly', name: 'Weekly' },
+            { id: 'daily', name: 'Daily' },
+            { id: 'interval', name: 'Interval' },
         ];
         return options;
     };
@@ -164,34 +168,57 @@ export const JobSchedule = () => {
                                             keyPair={['id', 'name']}
                                             options={jobScheduleOption()}
                                             errorMessage={errorMessage && errorMessage?.job_schedule ? errorMessage?.job_schedule : false}
-                                            disabled
                                         />
                                     </div>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Typography className="text-md mb-1">Time:</Typography>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <TimePicker
+                                {formData.job_schedule === 'daily' ? (<>
+                                    <Grid item xs={12}>
+                                        <Typography className="text-md mb-1">Time:</Typography>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <TimePicker
+                                                className='w-[250px]'
+                                                views={['hours', 'minutes']}
+                                                name="time"
+                                                ampm={false}
+                                                value={formData.time ? dayjs(formData.time).tz("Asia/Jakarta") : null} // Ensure it's Jakarta time
+                                                onError={(newError) => setErrorMessage({ ...errorMessage, time: newError === 'invalidDate' ? 'Invalid Time' : newError })}
+                                                slotProps={{
+                                                    textField: {
+                                                        helperText: errorMessage && errorMessage?.time ? errorMessage?.time : '',
+                                                    },
+                                                }}
+                                                timezone="Asia/Jakarta"
+                                                onChange={(newValue) => {
+                                                    setFormData({ ...formData, time: dayjs(newValue).tz("Asia/Jakarta") });
+                                                }}
+                                                disabled={userProfile?.userProfile?.userType === '2' ? true : false}
+                                                readOnly={userProfile?.userProfile?.userType === '2' ? true : false}
+                                            />
+                                        </LocalizationProvider>
+                                    </Grid>
+                                </>) : (<>
+                                    <Grid item xs={12}>
+                                        <Typography className="text-md mb-1 ">Interval (second):</Typography>
+                                        <MInput
                                             className='w-[250px]'
-                                            views={['hours', 'minutes']}
-                                            name="time"
-                                            ampm={false}
-                                            value={formData.time ? dayjs(formData.time).tz("Asia/Jakarta") : null} // Ensure it's Jakarta time
-                                            onError={(newError) => setErrorMessage({ ...errorMessage, time: newError === 'invalidDate' ? 'Invalid Time' : newError })}
-                                            slotProps={{
-                                                textField: {
-                                                    helperText: errorMessage && errorMessage?.time ? errorMessage?.time : '',
-                                                },
-                                            }}
-                                            timezone="Asia/Jakarta"
-                                            onChange={(newValue) => {
-                                                setFormData({ ...formData, time: dayjs(newValue).tz("Asia/Jakarta") });
+                                            type='number'
+                                            variant="outlined"
+                                            name="interval"
+                                            value={formData.interval}
+                                            onChange={(event) => handleInputChange(event)}
+                                            errorMessage={errorMessage && errorMessage?.interval ? errorMessage?.interval : false}
+                                            onInput={(e) => {
+                                                const numericValue = parseFloat(e.target.value);
+                                                // Check if the numeric value is below the min value (0)
+                                                if (!isNaN(numericValue) && numericValue < 1) {
+                                                    e.target.value = "1";
+                                                }
                                             }}
                                             disabled={userProfile?.userProfile?.userType === '2' ? true : false}
                                             readOnly={userProfile?.userProfile?.userType === '2' ? true : false}
                                         />
-                                    </LocalizationProvider>
-                                </Grid>
+                                    </Grid>
+                                </>)}
                                 <Grid item xs={12}>
                                     <Typography className="text-md mb-1 ">Max Record:</Typography>
                                     <MInput
